@@ -100,7 +100,7 @@ export default class SchematicWindow extends React.Component<SchematicWindowProp
             this.setState({tool: 'Move', tools: new SCMove(this.state.spiceSchematic, this.ref, this.state.tools)})
         } else if(evt.key === 'w') {
             this.setState({tool: 'Wire', tools: new SCWireTool(this.state.spiceSchematic, this.ref, this.state.tools)});
-        } else if (evt.key === 'q') {
+        } else if (evt.key === '') {
             this.setState({tool: 'Place'});
         } else if (evt.key === "Escape") {
             this.setState({tool: 'Pan', tools: new SCPan(this.state.spiceSchematic, this.ref, this.state.tools)});
@@ -132,6 +132,12 @@ export default class SchematicWindow extends React.Component<SchematicWindowProp
             this.setState({tool: 'Net', tools: new SCNet(this.state.spiceSchematic, this.ref, this.state.tools, this.forceUpdate.bind(this))});
         } else if (evt.key === 'g') {
             this.setState({tool: 'Net', tools: new SCNet(this.state.spiceSchematic, this.ref, this.state.tools, this.forceUpdate.bind(this), true)});
+        } else if (evt.key === '`') {
+            console.log(this.state.spiceSchematic.getNetlist())
+            this.state.spiceSchematic.compareNetlist()
+        } else if (evt.key === 'q') {
+            console.log("placing comp");
+            this.setState({tool: 'IC', tools: new SCPlace(this.state.spiceSchematic, this.ref, this.state.tools, 'LM301', this.forceUpdate.bind(this))})
         }
     }
 

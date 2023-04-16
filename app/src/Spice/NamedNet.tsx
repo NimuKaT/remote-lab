@@ -26,6 +26,7 @@ export default class NamedNet {
             y: y
         }
         this.node = this.nodeManager.newNode(this);
+        this.node.setParent(this);
     }
 
     setName(name: string) {

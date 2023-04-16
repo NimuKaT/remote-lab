@@ -47,4 +47,8 @@ export default class NodeManager {
         node.forceUpdate()
     })
    } 
+
+   getNodes() {
+    return this.nodes;
+   }
 }

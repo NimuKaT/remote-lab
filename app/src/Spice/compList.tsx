@@ -29,3 +29,28 @@ compList.set('voltage', 'LINE Normal -8 36 8 36\n' +
 'CIRCLE Normal -32 24 32 88\n' +
 'WINDOW 0 24 16 Left 2\n' +
 'WINDOW 3 24 96 Left 2')
+compList.set('AD549', 'LINE Normal -32 32 32 64\n' +
+'LINE Normal -32 96 32 64\n' +
+'LINE Normal -32 32 -32 96\n' +
+'LINE Normal -28 48 -20 48\n' +
+'LINE Normal -28 80 -20 80\n' +
+'LINE Normal -24 84 -24 76\n' +
+'LINE Normal 0 32 0 48\n' +
+'LINE Normal 0 96 0 80\n' +
+'LINE Normal 4 44 12 44\n' +
+'LINE Normal 8 40 8 48\n' +
+'LINE Normal 4 84 12 84\n' +
+'WINDOW 0 16 32 Left 2\n' +
+'WINDOW 3 16 96 Left 2')
+compList.set('LM301', 'LINE Normal -32 -32 -16 -32\n' +
+'LINE Normal -32 0 -16 0\n' +
+'LINE Normal 32 -16 16 -16\n' +
+'LINE Normal 32 16 16 16\n' +
+'LINE Normal -32 16 -16 16\n' +
+'LINE Normal -32 -16 -16 -16\n' +
+'LINE Normal 32 0 16 0\n' +
+'LINE Normal 32 -32 16 -32\n' +
+'RECTANGLE Normal 16 24 -16 -40\n' +
+'ARC Normal -8 -32 8 -48 -8 -40 8 -40\n' +
+'WINDOW 3 0 35 Center 0\n' +
+'WINDOW 0 0 60 Center 0')

@@ -132,17 +132,30 @@ export default class SPCompObject extends React.Component<SPCompObjectP, SPCompO
                 stroke={this.state.stroke}
                 strokeWidth={0.5}
             />;
-        } else if (type.match('rectangle')) {
+        } else if (type.match('RECTANGLE')) {
             x1 = parseInt(values[2]);
             y1 = parseInt(values[3]);
             x2 = parseInt(values[4]);
             y2 = parseInt(values[5]);
+            let temp = 0;
+            if (x2 < x1) {
+                temp = x1;
+                x1 = x2;
+                x2 = temp
+            }
+            if (y2 < y1) {
+                temp = y1;
+                y1 = y2;
+                y2 = temp
+            }
             element = <Rect
                 key={this.shapeNum}
                 x={x1}
                 y={y1}
                 width={Math.abs(x1-x2)}
                 height={Math.abs(y1-y2)}
+                stroke={this.state.stroke}
+                strokeWidth={0.5}
             />;
         } else if (type.match('CIRCLE')) {
             x1 = parseInt(values[2]);

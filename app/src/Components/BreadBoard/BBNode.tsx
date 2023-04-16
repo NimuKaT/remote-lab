@@ -13,11 +13,23 @@ export default class BBNode {
         }
     }
 
+    setLocalPos(pos: Vector2d) {
+        this.localPos.x = pos.x;
+        this.localPos.y = pos.y;
+    }
+
     getLocalX() {
         return this.localPos.x;
     }
     getLocalY() {
         return this.localPos.y;
+    }
+
+    getShiftX() {
+        return this.localPos.x + this.shiftVec.x
+    }
+    getShiftY() {
+        return this.localPos.y + this.shiftVec.y
     }
 
     setAbsPos(pos: Vector2d) {
@@ -54,6 +66,19 @@ export default class BBNode {
         }
     }
 
+    // pos: position relative to breadboard
+    isHover(pos: Vector2d) {
+        let flag: boolean = false;
+        if (Math.abs(pos.x - this.getLocalX()) <= 4) {
+            if (Math.abs(pos.y - this.getLocalY()) <= 4) {
+                flag = true;
+                // return {x: this.getLocalX(), y: this.getLocalY()}
+            }
+        }
+        // return undefined;
+        return flag;
+
+    }
 
 
 

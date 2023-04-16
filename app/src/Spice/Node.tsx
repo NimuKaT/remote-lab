@@ -1,6 +1,9 @@
 import { Vector2d } from "konva/lib/types";
+import NamedNet from "./NamedNet";
 import NodeManager from "./NodeManager";
 import NodeObject from "./NodeObject";
+import { SPComponent } from "./SPComponent";
+import SpiceWire from "./SpiceWire";
 
 let fpError: number = 1;
 
@@ -16,6 +19,7 @@ export default class SPNode {
     shiftX: number = 0;
     shiftY: number = 0;
     netName: string | undefined;
+    parent: SpiceWire | SPComponent | NamedNet | undefined;
 
     constructor(id: number, manager: NodeManager) {
 
@@ -23,6 +27,14 @@ export default class SPNode {
         this.id = id;
         this.connectedNodes = [];
         this.manager = manager;
+    }
+
+    setParent(parent: SpiceWire | SPComponent | NamedNet) {
+        this.parent = parent;
+    }
+
+    getParent(): SpiceWire | SPComponent | NamedNet | undefined {
+        return this.parent;
     }
 
     setRef(nodeObj: NodeObject) {

@@ -31,6 +31,8 @@ export default class SpiceWire {
         this.nodes.push(nodeMan.newNode(this));
         this.nodes[0].setInitPos(0, 0);
         this.nodes[1].setInitPos(0, 0);
+        this.nodes[0].setParent(this)
+        this.nodes[1].setParent(this)
     }
 
     getX1() {
@@ -144,4 +146,13 @@ export default class SpiceWire {
         return this.deleted ? [] : ['WIRE ' + this.x1 + ' ' + this.y1 + ' ' + this.x2 + ' ' + this.y2]
     }
 
+    getOtherNode(node: SPNode) {
+        let retNode: SPNode | undefined;
+        this.nodes.forEach((n) => {
+            if (node.id !== n.id) {
+                retNode = n
+            }
+        })
+        return retNode;
+    }
 }

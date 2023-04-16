@@ -11,4 +11,12 @@ SysAttr.set('cap', 'SYMATTR Value C\n' +
 SysAttr.set('voltage', 'SYMATTR Value V\n' +
 'SYMATTR Prefix V\n' +
 'SYMATTR Description Voltage Source, eighter DC AC, PULSE, SINE, PWL, EXP, or SFFM');
-SysAttr.set('', '');
+SysAttr.set('AD549', 'SYMATTR Value AD549\n' +
+'SYMATTR Prefix X\n' +
+'SYMATTR SpiceModel ADI1.lib\n' +
+'SYMATTR Value2 AD549\n' +
+'SYMATTR Description Precision Low-Cost HS BiFET Dual Op Amp');
+SysAttr.set("LM301", 'SYMATTR Value LM301\n' +
+'SYMATTR Prefix X\n' +
+'SYMATTR SpiceModel LM301.lib\n' +
+'SYMATTR Value2 LM301')

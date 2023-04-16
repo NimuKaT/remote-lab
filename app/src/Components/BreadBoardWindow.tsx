@@ -8,6 +8,11 @@ import BBPlaceStatic from "./BreadBoard/BBTool/BBPlaceStatic";
 import BBTools from "./BreadBoard/BBTool/BBTools";
 import {Stage as stage} from "konva/lib/Stage"
 import { KonvaEventObject } from "konva/lib/Node";
+import BBWireObj from "./BreadBoard/BBWireObj";
+import BBWireTool from "./BreadBoard/BBTool/BBWireTool";
+import BBStretchComp from "./BreadBoard/BBStretchComp";
+import BBPlaceStretch from "./BreadBoard/BBTool/BBPlaceStretch";
+import BBStretchObj from "./BreadBoard/BBStretchObj";
 
 
 interface BBWindowP {
@@ -20,6 +25,7 @@ interface BBWindowS {
     scale: number,
     board: BBoard,
     currTool?: BBTools
+    tools: Map<string, BBTools>
 }
 
 export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindowS> {
@@ -30,13 +36,22 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
         let board = new BBoard(2, 10, 5, this);
         let tool = new BBPlaceStatic(board, this.stageRef);
         tool.onInitialise();
+        let toolMap = new Map<string, BBTools>();
+        toolMap.set('PlaceStatic', tool);
+        tool = new BBWireTool(board, this.stageRef);
+        board.deleteComponents();
+        toolMap.set("Wire", tool);
+        tool = new BBPlaceStretch(board, this.stageRef);
+        toolMap.set("PlaceStretch", tool);
+        board.cancelMovement()
         
         this.state = {
             width: 500,
             height: 500,
             scale: 3,
             board: board,
-            currTool: tool
+            currTool: tool,
+            tools: toolMap
         }
         window.addEventListener('resize', this.updateStage.bind(this), true);
         
@@ -91,6 +106,48 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
         this.state.currTool?.onKeyDown(evt);
         if (evt.key === 'i') {
             this.state.currTool?.onInitialise();
+            let tool: BBTools| undefined = this.state.tools.get("PlaceStatic");
+            if (tool) {
+                this.state.currTool?.onToolChange(tool);
+                tool.onInitialise();
+                this.setState({
+                    currTool: tool
+                })
+            }
+        }
+        if (evt.key === 'w') {
+            let tool: BBTools| undefined = this.state.tools.get("Wire");
+            if (tool) {
+                this.state.currTool?.onToolChange(tool);
+                tool.onInitialise();
+                this.setState({
+                    currTool: tool
+                })
+            }
+        }
+        if (evt.key === 'r') {
+            let tool: BBTools | undefined = this.state.tools.get("PlaceStretch");
+            if (tool instanceof BBPlaceStretch) {
+                let placeStretch: BBPlaceStretch = tool;
+                placeStretch.setComponent('res', '1k');
+                this.state.currTool?.onToolChange(tool);
+                tool.onInitialise();
+                this.setState({
+                    currTool: tool
+                })
+            }
+        }
+        if (evt.key === 'c') {
+            let tool: BBTools | undefined = this.state.tools.get("PlaceStretch");
+            if (tool instanceof BBPlaceStretch) {
+                let placeStretch: BBPlaceStretch = tool;
+                placeStretch.setComponent('cap', '1u');
+                this.state.currTool?.onToolChange(tool);
+                tool.onInitialise();
+                this.setState({
+                    currTool: tool
+                })
+            }
         }
         
 
@@ -127,6 +184,12 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
                         })}
                         {this.state.board.getIC().map((ic) => {
                             return <BBFComp comp={ic}/>
+                        })}
+                        {this.state.board.getWires().map((wire) => {
+                            return <BBWireObj wire={wire}/>
+                        })}
+                        {this.state.board.getStretch().map((comp) => {
+                            return <BBStretchObj comp={comp}/>
                         })}
                     </Layer>
 

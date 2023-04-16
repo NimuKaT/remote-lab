@@ -1,17 +1,25 @@
+import { Vector2d } from "konva/lib/types";
+import React from "react";
 import { CollisionBox } from "../../Spice/CollisionBox";
-import {BBNode} from "./BBNode"
+import BBNode from "./BBNode"
+import BBWireObj from "./BBWireObj";
 
 export default class BBWire {
     deleted: boolean = false
     nodes: Array<BBNode> = [];
-    nodePos: [Vector2d, Vector2d];
-    anchors: Array<BBNode> = [];
+    nodePos: [Vector2d, Vector2d] = [{x:0,y:0}, {x:0, y:0}];
+    anchors: Array<Vector2d> = [];
     color: string = 'red'
     shiftVector: Vector2d = {x: 0, y:0}
+    ref?: BBWireObj;
 
 
-    placeNode(pos: Vector2d) {
-
+    placeNode(pos: Vector2d, index: number) {
+        if (0 <= index && index <= 1) {
+            this.nodePos[index].x = pos.x;
+            this.nodePos[index].y = pos.y;
+        }
+        this.ref?.forceUpdate();
     }
 
     addAnchor(pos: Vector2d) {
@@ -25,6 +33,15 @@ export default class BBWire {
 
     insertAnchor() {
 
+    }
+    
+    getPoints() {
+        let points: Array<number> = [];
+        this.nodePos.forEach((node) => {
+            points.push(node.x)
+            points.push(node.y)
+        })
+        return points;
     }
 
     moveAnchor(oldPos: Vector2d, newPos: Vector2d) {
@@ -56,4 +73,8 @@ export default class BBWire {
     deselect(){}
 
     changeColor(newColor: string) {}
+
+    getRef(ref: BBWireObj) {
+        this.ref = ref;
+    }
 }

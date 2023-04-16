@@ -22,10 +22,10 @@ export default class BBPlaceStatic extends BBTools {
         this.board.foreceUpdate();
         
         this.mouseRef = pos;
-        console.log("raw pos" + pos.x + " " + pos.y);
+        // console.log("raw pos" + pos.x + " " + pos.y);
         
         pos = this.snap(pos)
-        console.log("Placing at " + pos.x + " " + pos.y);
+        // console.log("Placing at " + pos.x + " " + pos.y);
         
         this.board.createNewStaticComp('6 pin', pos);
         this.board.moveComponents({x:0, y:0})
@@ -39,9 +39,9 @@ export default class BBPlaceStatic extends BBTools {
         let delta = this.getDelta(pos);
         this.board.moveComponents(delta);
         this.board.foreceUpdate();
-        console.log("On Move");
-        console.log(pos);
-        console.log(delta);
+        // console.log("On Move");
+        // console.log(pos);
+        // console.log(delta);
     }
 
     onMouseUp(evt: KonvaEventObject<MouseEvent>): void {

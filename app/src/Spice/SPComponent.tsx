@@ -100,6 +100,7 @@ export class SPComponent {
         if (pinDef.has(this.name)) {
             pinDef.get(this.name)?.split('\n').forEach((cmd: string) => {
                 let node: SPNode = this.manager.newNode(this);
+                node.setParent(this);
                 let values: Array<string> = cmd.split(' ');
                 node.setInitPos(parseInt(values[1]), parseInt(values[2]));
                 this.nodes.push(node);

@@ -2,6 +2,8 @@ import { Vector2d } from "konva/lib/types";
 import BreadBoardWindow from "../BreadBoardWindow";
 import BBIC from "./BBIC";
 import BBNode from "./BBNode";
+import BBWire from "./BBWire";
+import BBStretchComp from "./BBStretchComp";
 
 interface BBlabels {
     text: string,
@@ -18,8 +20,12 @@ export default class BBoard {
     nodeDist: number = 24;
     spacerSize: number = 1;
     ic: Array<BBIC> = [];
+    wires: Array<BBWire> = [];
+    stretchComp: Array<BBStretchComp> = []
 
     selectedIC: Array<BBIC> = [];
+    selectedWire: Array<BBWire> = [];
+    selectedStretch: Array<BBStretchComp> = []
 
     constructor(mjCol: number, mjRow: number, mnCol: number, ref: BreadBoardWindow) {
         this.ref = ref;
@@ -63,9 +69,37 @@ export default class BBoard {
         }
     }
 
+    createNewStretchComp(modelName: string, pos: Vector2d) {
+        let stretch = new BBStretchComp(modelName, pos)
+        this.stretchComp.push(stretch);
+        this.selectedStretch.push(stretch);
+    }
+
+    createNewWire(pos: Vector2d, color: string = 'red') {
+        let wire = new BBWire();
+        wire.placeNode(pos, 0);
+        this.wires.push(wire);
+        this.selectedWire.push(wire);
+    }
+
+    placeWireEnd(pos: Vector2d, index: 0|1) {
+        this.selectedWire.forEach((wire) => {
+            wire.placeNode(pos, index);
+        })
+    }
+
+    placeStretchEnd(pos:Vector2d, index: number) {
+        this.selectedStretch.forEach((comp) => {
+            comp.placeNode(index, pos);
+        })
+    }
+
     moveComponents(shift: Vector2d) {
         this.selectedIC.forEach((ic) => {
             ic.shift(shift);
+        })
+        this.selectedStretch.forEach((comp) => {
+            comp.shift(shift)
         })
     }
 
@@ -73,7 +107,12 @@ export default class BBoard {
         this.selectedIC.forEach((ic) => {
             ic.place();
         })
+        this.selectedStretch.forEach((comp) => {
+            comp.place()
+        })
         this.selectedIC = [];
+        this.selectedWire = [];
+        this.selectedStretch = []
     }
 
     cancelMovement() {
@@ -81,6 +120,14 @@ export default class BBoard {
             ic.cancel();
         })
         this.selectedIC = [];
+        this.selectedWire.forEach((wire) => {
+
+        })
+        this.selectedWire = [];
+        this.selectedStretch.forEach((comp) => {
+
+        })
+        this.selectedStretch = []
     }
 
     deleteComponents() {
@@ -88,10 +135,34 @@ export default class BBoard {
             ic.delete();
         })
         this.selectedIC = []
+        this.selectedStretch.forEach((comp) => {
+            comp.delete();
+        })
+    }
+
+    // onBBNode(pos: Vector2d): Vector2d | undefined {
+    onBBNode(pos: Vector2d)  {
+        let flag: boolean = false;
+        let retPos = undefined
+        this.nodes.forEach((node) => {
+            let n = node.isHover(pos);
+            if (n) {
+                flag = true;
+                retPos = pos
+                // return n;
+            }
+        })
+        // return undefined;
+        return retPos
+
     }
 
     getNodes() {
         return this.nodes;
+    }
+
+    getWires() {
+        return this.wires;
     }
 
     getLabels() {
@@ -99,5 +170,9 @@ export default class BBoard {
     }
     getIC() {
         return this.ic;
+    }
+
+    getStretch() {
+        return this.stretchComp;
     }
 }
