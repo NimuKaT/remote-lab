@@ -1,3 +1,5 @@
 export interface LineCMD {
-    points: [number, number, number, number];
+    points: [number, number, number, number],
+    color?: string,
+    strokeWidth?: number
 }

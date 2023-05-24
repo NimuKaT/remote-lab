@@ -8,6 +8,7 @@ import NodeManager from "./NodeManager";
 import SPCompObject from "./SPCompObject";
 import { SPComponent } from "./SPComponent";
 import SpiceWire from "./SpiceWire";
+import { netListSolver } from "../NetListSolver";
 
 export default class SpiceSchematic {
     fileName?: string;
@@ -559,12 +560,17 @@ export default class SpiceSchematic {
                 }
             })
         })
+
+        //
+            console.log(netListSolver(refNetlist, curNetlist));
+            // console.log('ref net')
+        //
         
-        console.log(refComps);
-        console.log(refNet);
+        // console.log(refComps);
+        // console.log(refNet);
         
-        console.log(curComps);
-        console.log(curNet);
+        // console.log(curComps);
+        // console.log(curNet);
         // Begining of Net list comparison
         let matchingCompIndex: Array<Array<number>> = [];
         let matchedIndex: Array<number> = [];

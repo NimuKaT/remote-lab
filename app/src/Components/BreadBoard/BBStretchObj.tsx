@@ -4,6 +4,7 @@ import { Group, Line } from "react-konva";
 import { log } from "console";
 import BBNodeObj from "./BBNodeObj";
 import { Vector2d } from "konva/lib/types";
+import SpiceText from "../../Spice/SpiceText";
 
 interface BBStretchObjP {
     comp: BBStretchComp
@@ -19,7 +20,7 @@ export default class BBStretchObj extends React.Component<BBStretchObjP, BBStret
     rotateY(pos: Vector2d, rot: number) {
         return pos.y * Math.cos(rot) - pos.x * Math.sin(rot)
     }
-    rotateLine(refPos: Vector2d, points: [number, number, number, number], rot: number) {
+    rotateLine(refPos: Vector2d, points: [number, number, number, number], rot: number, strokeWidth?: number, color?: string) {
         return <Line
             x={0}
             y={0}
@@ -29,8 +30,8 @@ export default class BBStretchObj extends React.Component<BBStretchObjP, BBStret
                 refPos.x + this.rotateX({x:points[2], y: points[3]}, rot),
                 refPos.y - this.rotateY({x:points[2], y: points[3]}, rot),
             ]}
-            stroke={'black'}
-            strokeWidth={1}
+            stroke={color ? color :'black'}
+            strokeWidth={strokeWidth ? strokeWidth : 1}
         />
     }
 
@@ -73,7 +74,14 @@ export default class BBStretchObj extends React.Component<BBStretchObjP, BBStret
                 strokeWidth={1}
             />
             {symbol.lines.map((line) => {
-                return this.rotateLine(refPos, line.points, rot)
+                if (line.strokeWidth) {
+                    if (line.color) {
+                        return this.rotateLine(refPos, line.points, rot, line.strokeWidth, line.color)
+                    }
+                    return this.rotateLine(refPos, line.points, rot, line.strokeWidth)
+                } else {
+                    return this.rotateLine(refPos, line.points, rot)
+                }
             })}
             {symbol.rects.map((rect) => {
                 return <>
@@ -83,6 +91,10 @@ export default class BBStretchObj extends React.Component<BBStretchObjP, BBStret
                     {this.rotateLine(refPos, [rect.x, rect.y+rect.h, rect.x+rect.w,rect.y+rect.h],rot)}
                 </>
             })}
+            {this.props.comp.resLines.map((line) => {
+                return this.rotateLine(refPos, line.points, rot, line.strokeWidth, line.color)
+            })}
+            {this.props.comp.type === 'cap' ? <SpiceText x={refPos.x+15} y={refPos.y} orientation="R0" justification="Left" text={this.props.comp.value} fontSize={14}/>: ""}
             {nodes.map((node) => {
                 return <BBNodeObj node={node} valid={false} shift={true}/>
             })}

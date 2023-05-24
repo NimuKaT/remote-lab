@@ -20,6 +20,13 @@ export default class BBStretchCompRef {
             w: 20,
             h: 30
         });
+        // Test
+        symbol.lines.push({points:[0,-15,0,15], color: "#E9CCA4", strokeWidth:20})
+        // symbol.lines.push({points:[-10, -10, 10, -10], strokeWidth: 2})
+        // symbol.lines.push({points:[-10, -5, 10, -5], strokeWidth: 2})
+        // symbol.lines.push({points:[-10, 0, 10, 0], strokeWidth: 2})
+        // symbol.lines.push({points:[-10, 10, 10, 10], strokeWidth: 2})
+        // Test END
         anchor.push({x:0, y: -15})
         anchor.push({x:0, y:15})
         this.symbols.set('res', symbol);

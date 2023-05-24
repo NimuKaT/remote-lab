@@ -1,15 +1,25 @@
 import { KonvaEventObject } from "konva/lib/Node";
 import BBTools from "./BBTools";
+import BBWireModal from "../Modal/BBWireModal";
 
 
 export default class BBWireTool extends BBTools {
+    color: string = 'red'
     isFirstnode: boolean = true;
 
     onInitialise(): void {
+        this.board.deselect()
         this.isFirstnode = true;
+        this.board.openModal({hideBackdrop: true},
+            <BBWireModal closeFunc={this.board.getModalClose()} setFunc={this.setColor.bind(this)}/>)
+    }
+
+    setColor(color: string) {
+        this.color = color
     }
 
     onToolChange(newTool: BBTools): void {
+        this.board.deleteComponents()
         
     }
 
@@ -19,7 +29,7 @@ export default class BBWireTool extends BBTools {
 
     onMouseDown(evt: KonvaEventObject<MouseEvent>): void {
         let pos = this.getPointerPos();
-        pos = this.snap(pos)
+        // pos = this.snap(pos)
         console.log("Wire tool mouse Down");
         console.log(evt.evt.button);
         
@@ -32,11 +42,11 @@ export default class BBWireTool extends BBTools {
             
             if (n) {
             console.log('has pos');
-                // pos.x = n.x;
-                // pos.y = n.y;
+                pos.x = n.x;
+                pos.y = n.y;
                 if (this.isFirstnode) {
                     // Create new wire and place node
-                    this.board.createNewWire(pos);
+                    this.board.createNewWire(pos, this.color);
                     this.board.placeWireEnd(pos, 1)
                     this.isFirstnode = false;
                 }
@@ -48,7 +58,7 @@ export default class BBWireTool extends BBTools {
                 }
                 this.board.foreceUpdate();
             }
-       }
+        }
         if (evt.evt.button === 2) {
             if (!this.isFirstnode) {
                 // Place anchor
@@ -60,9 +70,17 @@ export default class BBWireTool extends BBTools {
     onMouseMove(evt: KonvaEventObject<MouseEvent>): void {
         if (!this.isFirstnode) {
             let pos = this.getPointerPos();
-            pos = this.snap(pos)
-            this.board.placeWireEnd(pos, 1)
-            this.board.foreceUpdate();
+            let rawPos = {x: pos.x, y: pos.y}
+            let Spos = this.snap(pos)
+            let n = this.board.onBBNode(Spos);
+            if (n) {
+                this.board.placeWireEnd(Spos, 1)
+                this.board.foreceUpdate();
+            }
+            else {
+                this.board.placeWireEnd(rawPos, 1)
+                this.board.foreceUpdate();
+            }
         }
         
     }

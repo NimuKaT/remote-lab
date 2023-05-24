@@ -5,11 +5,19 @@ export default class BBNode {
     absPos?: Vector2d;
     shiftVec: Vector2d = {x: 0, y:0};
     nodeNet?: string;
+    color?: string
+    opacity?: number
 
-    constructor(localPos: Vector2d, nodeNet?: string) {
+    constructor(localPos: Vector2d, nodeNet?: string, color?: string, opacity?: number) {
         this.localPos = localPos;
         if (nodeNet) {
             this.nodeNet = nodeNet;
+        }
+        if (color) {
+            this.color = color;
+        }
+        if (opacity) {
+            this.opacity = opacity
         }
     }
 

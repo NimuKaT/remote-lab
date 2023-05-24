@@ -7,10 +7,13 @@ interface SpiceTextP {
     // coord: Vector2d
     x: number
     y: number
-    orientation: string;
+    orientation?: string;
     justification: string
     text: string;
-
+    fontSize?: number
+    color?: string
+    font?: string,
+    width?: number
 }
 
 interface SpiceTextS {
@@ -97,6 +100,55 @@ export default class SpiceText extends React.Component<SpiceTextP, SpiceTextS> {
 
 
     render(): JSX.Element {
+        let x: number = 0, y: number = 0;
+        let width: number = 0, height: number = 0;
+        let rot: number = 0;
+        if (this.textRef.current) {
+            width = this.textRef.current.getTextWidth();
+            height = this.textRef.current.height();
+            if (this.props.justification === 'Left') {
+                x = 0;
+                y = - Math.round(height/2)
+                rot = 0;
+            } else if (this.props.justification === 'Right') {
+                x = - width;
+                y = - Math.round(height/2)
+                rot = 0;
+            } else if (this.props.justification === "Center") {
+                x = - Math.round(width/2);
+                y = - Math.round(height/2)
+                rot = 0;
+            } else if (this.props.justification === "Top" ) {
+                x = - Math.round(width/2);
+                y = 0;
+                rot = 0;
+            } else if (this.props.justification === "Bottom" ) {
+                x = - Math.round(width/2);
+                y = - height
+                rot = 0;
+            } else if (this.props.justification === "VLeft" ) {
+                x = - Math.round(height/2);
+                y = 0 ;
+                rot = -90;
+            } else if (this.props.justification === "VRight" ) {
+                x = - Math.round(height/2);
+                y =  width;
+                rot = -90;
+            } else if (this.props.justification === "VCenter" ) {
+                x = - Math.round(height/2);
+                y =  Math.round(width/2);
+                rot = -90;
+            } else if (this.props.justification === "VTop" ) {
+                x = 0;
+                y =  Math.round(width/2);
+                rot = -90;
+            } else if (this.props.justification === "VBottom" ) {
+                x = - height;
+                y =  Math.round(width/2);
+                rot = -90;
+            }
+        }
+
         return (
         <Group
             x={this.props.x}
@@ -104,12 +156,15 @@ export default class SpiceText extends React.Component<SpiceTextP, SpiceTextS> {
         >
             <Text
                 ref={this.textRef}
-                x={this.state.relPos.x}
-                y={this.state.relPos.y}
+                x={x}
+                y={y}
                 text={this.props.text}
-                fontFamily={'Calibri'}
-                fontSize={28}
-                rotation={this.state.rotation}
+                fontFamily={this.props.font ? this.props.font: 'Calibri'}
+                fontSize={this.props.fontSize? this.props.fontSize:28}
+                rotation={rot}
+                fill={this.props.color ? this.props.color : 'black'}
+                width={this.props.width? this.props.width: undefined}
+                align='center'
             />
         </Group>
         )

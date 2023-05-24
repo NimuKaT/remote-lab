@@ -1,6 +1,7 @@
 import { Vector2d } from "konva/lib/types";
 import BBNode from "./BBNode";
 import { ICSymbol } from "./ICSymbol";
+import { BBSymbol } from "./BBSymbol";
 
 export default class BBIC {
     pinCount: number = 6;
@@ -12,16 +13,17 @@ export default class BBIC {
     shiftVec: Vector2d = {x:0,y:0};
     nodes: Array<BBNode> = [];
 
-    constructor(modelName: string, pos: Vector2d) {
+    constructor(modelName: string, pos: Vector2d, pin: number) {
         this.modelName = modelName;
         this.localPos = pos;
-        // Temp nodes
-        this.nodes.push(new BBNode({x:0,y:48}))
-        this.nodes.push(new BBNode({x:24,y:48}))
-        this.nodes.push(new BBNode({x:48,y:48}))
-        this.nodes.push(new BBNode({x:48,y:0}))
-        this.nodes.push(new BBNode({x:24,y:0}))
-        this.nodes.push(new BBNode({x:0,y:0}))
+        this.pinCount = pin;
+
+        for (let i = 0; i < pin/2; i++) {
+            this.nodes.push(new BBNode({x:24*i,y:48}));
+        }
+        for (let i = 0; i < pin/2; i++) {
+            this.nodes.push(new BBNode({x:(pin/2-1)*24 -24*i,y:0}));
+        }
     }
 
     getLocalX() {
@@ -57,7 +59,42 @@ export default class BBIC {
     }
 
     getSymbol() {
-        return ICSymbol;
+        let sym: BBSymbol = {
+            lines: [],
+            rects: [],
+            arcs: [],
+            circles: []
+        }
+        for (let i = 0; i < this.pinCount/2; i++) {
+            sym.rects.push({x:i*24 - 4, y: 0, w: 8, h: 12})
+        }
+        for (let i = 0; i < this.pinCount/2; i++) {
+            sym.rects.push({x:i*24 - 4, y: 36, w: 8, h: 12})
+        }
+        sym.rects.push({x: -8, y: 12, w: this.pinCount/2*24 -8, h: 24})
+        sym.arcs.push({x:-8, y:24, r: 5, startAng: 90, endAng: -90, clockwise:true})
+        return sym
+        // return ICSymbol;
+    }
+
+    select(x: number, y: number, w: number, h:number): boolean {
+        let lx = this.localPos.x -8;
+        let ly = this.localPos.y;
+        let lw = this.pinCount/2*24 - 8;
+        let lh = 48;
+        let flag = false
+
+        // console.log("%d <= %d && %d <= %d", x, lx, lx + lw, x + w);
+        // console.log("%d <= %d && %d <= %d", y, ly, ly + lh, y + h);
+        
+        if (x <= lx && lx + lw <= x + w) {
+            if (y <= ly && ly + lh <= y + h) {
+                flag = true
+            }
+        } 
+
+
+        return flag
     }
 
     getNodes() {
@@ -68,5 +105,14 @@ export default class BBIC {
     }
     isDeleted() {
         return this.deleted;
+    }
+
+    getNetList(): {prefix: string, nodes: Array<Vector2d>, value: string} {
+        let lx = this.getLocalX(), ly = this.getLocalY();
+        let nodes: Array<Vector2d> = []
+        this.nodes.forEach((n) => {
+            nodes.push({x: n.getLocalX() + lx, y: n.getLocalY() + ly})
+        })
+        return {prefix: "U", nodes: nodes, value: this.modelName}
     }
 }

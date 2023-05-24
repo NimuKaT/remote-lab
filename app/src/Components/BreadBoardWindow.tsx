@@ -10,13 +10,19 @@ import {Stage as stage} from "konva/lib/Stage"
 import { KonvaEventObject } from "konva/lib/Node";
 import BBWireObj from "./BreadBoard/BBWireObj";
 import BBWireTool from "./BreadBoard/BBTool/BBWireTool";
-import BBStretchComp from "./BreadBoard/BBStretchComp";
 import BBPlaceStretch from "./BreadBoard/BBTool/BBPlaceStretch";
 import BBStretchObj from "./BreadBoard/BBStretchObj";
+import ModalHook from "./ModalHook";
+import PowerSupply from "./BreadBoard/Instruments/PowerSupply";
+import FunctionGenerator from "./BreadBoard/Instruments/FunctionGenarator";
+import Oscilloscope from "./BreadBoard/Instruments/Oscilloscope";
+import MultiMeter from "./BreadBoard/Instruments/MultiMeter";
+import BBSelect from "./BreadBoard/BBTool/BBSelect";
 
 
 interface BBWindowP {
-    isActive: boolean
+    isActive: boolean,
+    modalHook?: ModalHook
 }
 
 interface BBWindowS {
@@ -24,6 +30,7 @@ interface BBWindowS {
     height: number,
     scale: number,
     board: BBoard,
+    hasModalRef: boolean,
     currTool?: BBTools
     tools: Map<string, BBTools>
 }
@@ -33,10 +40,12 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
     tools: Map<string, BBTools> = new Map<string, BBTools>();
     constructor(P: BBWindowP, S: BBWindowS) {
         super(P, S);
-        let board = new BBoard(2, 10, 5, this);
-        let tool = new BBPlaceStatic(board, this.stageRef);
+        let board = new BBoard(2, 30, 5, this);
+        
+        // Initialises tools
+        let tool: BBTools = new BBPlaceStatic(board, this.stageRef);
         tool.onInitialise();
-        let toolMap = new Map<string, BBTools>();
+        let toolMap: Map<string, BBTools> = new Map<string, BBTools>();
         toolMap.set('PlaceStatic', tool);
         tool = new BBWireTool(board, this.stageRef);
         board.deleteComponents();
@@ -44,13 +53,16 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
         tool = new BBPlaceStretch(board, this.stageRef);
         toolMap.set("PlaceStretch", tool);
         board.cancelMovement()
+        tool = new BBSelect(board, this.stageRef);
+        toolMap.set("Select", tool);
         
         this.state = {
-            width: 500,
-            height: 500,
+            width: 50,
+            height: 50,
             scale: 3,
             board: board,
-            currTool: tool,
+            hasModalRef: false,
+            currTool: undefined,
             tools: toolMap
         }
         window.addEventListener('resize', this.updateStage.bind(this), true);
@@ -62,15 +74,26 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
         if (element) {
             element.tabIndex = 1;
             element.addEventListener('keydown', this.keydown.bind(this))
+            element.addEventListener('wheel', this.onScroll.bind(this))
             let parentElement = element.parentElement;
             if (parentElement) {
                 let w = parentElement.offsetWidth;
-                let h = parentElement.offsetHeight;
+                let h = window.innerHeight - 70
+                // let h = parentElement.offsetHeight;
                 this.setState({
                     width: w,
                     height: h
                 })
             }
+        }
+    }
+
+    componentDidUpdate(prevProps: Readonly<BBWindowP>, prevState: Readonly<BBWindowS>, snapshot?: any): void {
+        if (this.props.modalHook && !this.state.hasModalRef) {
+                this.state.board.getHookRef(this.props.modalHook);
+                this.setState({
+                    hasModalRef: true
+                })
         }
     }
 
@@ -81,8 +104,9 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
         if (element) {
             let parentElement = element.parentElement;
             if (parentElement) {
-                let w = parentElement.offsetWidth;
-                let h = parentElement.offsetHeight;
+                let w = parentElement.offsetWidth -2;
+                // let h = parentElement.offsetHeight;
+                let h = window.innerHeight - 70
                 this.setState({
                     width: w,
                     height: h
@@ -99,6 +123,12 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
     }
     onMouseUp(evt: KonvaEventObject<MouseEvent>) {
         this.state.currTool?.onMouseUp(evt);
+    }
+    onScroll(evt: globalThis.WheelEvent) {
+        evt.preventDefault()
+        if (this.state.scale > 0.01 && this.state.scale < 20) {
+            this.setState({scale: this.state.scale - evt.deltaY/1000})
+        }
     }
 
     keydown(evt: KeyboardEvent) {
@@ -149,10 +179,36 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
                 })
             }
         }
-        
+        if (evt.key === 's') {
+            let tool: BBTools| undefined = this.state.tools.get("Select");
+            if (tool instanceof BBSelect) {
+                let select: BBSelect = tool;
+                this.state.currTool?.onToolChange(tool);
+                tool.onInitialise();
+                this.setState({
+                    currTool: tool
+                })
+            }
+        }
+        if (evt.key === 'm') {
+            this.setState({
+                currTool: undefined
+            })
+        }
+        if (evt.key === 'Escape') {
+            if (this.state.currTool) {
+                this.state.currTool.onToolChange(this.state.currTool)
+            }
+            this.setState({
+                currTool: undefined
+            })
+        }
+        if (evt.key === '`') {
+            // this.state.board.getNetMap()
+            this.state.board.getNetList();
+        }
 
     }
-
 
     render(): React.ReactNode {
         return <div id="BBContainer"
@@ -168,18 +224,22 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
                     width={this.state.width}
                     height={this.state.height}
                     scale={{x: this.state.scale, y:this.state.scale}}
-                    draggable={true}
+                    draggable={this.state.currTool === undefined}
                     visible={this.props.isActive}
                     onMouseDown={this.onMouseDown.bind(this)}
                     onMouseMove={this.onMouseMove.bind(this)}
                     onMouseUp={this.onMouseUp.bind(this)}
                 >
                     <Layer x={120} y={120}>
-                        {this.state.board.getNodes().map((node) => {
-                            return <BBNodeObj node={node}/>
+                        <MultiMeter x={-450} y={-250}/>
+                        <PowerSupply x={-50} y={-250}/>
+                        <FunctionGenerator x={300} y={-250}/>
+                        <Oscilloscope x={700} y={-300}/>
+                        {this.state.board.getNodes().map((node, index) => {
+                            return <BBNodeObj key={index} node={node}/>
                         })}
-                        {this.state.board.getLabels().map((lable) => {
-                            return <Text x={lable.pos.x} y={lable.pos.y} text={lable.text}
+                        {this.state.board.getLabels().map((lable, index) => {
+                            return <Text key={index} x={lable.pos.x} y={lable.pos.y} text={lable.text}
                             fontSize={18} width={24} align={"center"}/>
                         })}
                         {this.state.board.getIC().map((ic) => {
@@ -191,6 +251,7 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
                         {this.state.board.getStretch().map((comp) => {
                             return <BBStretchObj comp={comp}/>
                         })}
+                        {this.state.currTool !== undefined ? this.state.currTool.render() : ''}
                     </Layer>
 
                 </Stage>

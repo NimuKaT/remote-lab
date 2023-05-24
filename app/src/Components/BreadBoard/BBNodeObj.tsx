@@ -13,7 +13,7 @@ interface BBNodeObjS {
 }
 
 export default class BBNodeObj extends React.Component<BBNodeObjP, BBNodeObjS> {
-    length: number = 16;
+    length: number = 12;
     render(): React.ReactNode {
         return <Rect
             x={ this.props.shift ? 
@@ -26,8 +26,8 @@ export default class BBNodeObj extends React.Component<BBNodeObjP, BBNodeObjS> {
             height={this.length}
             stroke={this.props.valid ? 'green' : (this.props.valid === false ? 'red' : 'grey')}
             strokeWidth={0.1}
-            fill={this.props.valid ? 'green' : (this.props.valid === false ? 'red' : 'grey')}
-            opacity={0.4}
+            fill={this.props.node.color? this.props.node.color: (this.props.valid ? 'green' : (this.props.valid === false ? 'red' : 'grey'))}
+            opacity={this.props.node.opacity? this.props.node.opacity: 0.4}
             
         />
     }

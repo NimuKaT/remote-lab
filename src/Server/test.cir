@@ -1,0 +1,19 @@
+.title test circuit
+
+
+* set filetype=ascii
+V1 n1 0 SINE(0 1 10)
+R1 n1 n2 1k
+R2 n1 0 2k
+C1 n2 n0 1u
+
+
+* .set filetype=ascii
+.probe alli
+.tran 1m 1
+* print i(V1)
+.save all
+
+* .endc
+
+.end

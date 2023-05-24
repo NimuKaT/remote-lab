@@ -1,16 +1,26 @@
 import { KonvaEventObject } from "konva/lib/Node";
 import BBTools from "./BBTools";
+import BBICModal from "../Modal/BBICModal";
 
 export default class BBPlaceStatic extends BBTools {
+    compName: string = ''
+    pinCount: number = 0
 
     onInitialise(): void {
+        this.board.deselect()
+        this.board.openModal({hideBackdrop: true},
+            <BBICModal closeFunc={this.board.getModalClose()} setFunc={this.setValue.bind(this)}/>)
+
+        
+    }
+
+    setValue(val: string, pinCount: number) {
+        this.compName = val;
+        this.pinCount = pinCount
         let pos = this.getPointerPos()
         this.mouseRef = pos;
         pos = this.snap(pos);
-        this.board.createNewStaticComp('6 pin', pos);
-        console.log(pos);
-
-        
+        this.board.createNewStaticComp(this.compName, pos, this.pinCount);
     }
 
     onMouseDown(evt: KonvaEventObject<MouseEvent>): void {
@@ -27,7 +37,7 @@ export default class BBPlaceStatic extends BBTools {
         pos = this.snap(pos)
         // console.log("Placing at " + pos.x + " " + pos.y);
         
-        this.board.createNewStaticComp('6 pin', pos);
+        this.board.createNewStaticComp(this.compName, pos, this.pinCount);
         this.board.moveComponents({x:0, y:0})
         this.board.foreceUpdate();
         

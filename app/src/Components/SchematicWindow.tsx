@@ -137,7 +137,7 @@ export default class SchematicWindow extends React.Component<SchematicWindowProp
             this.state.spiceSchematic.compareNetlist()
         } else if (evt.key === 'q') {
             console.log("placing comp");
-            this.setState({tool: 'IC', tools: new SCPlace(this.state.spiceSchematic, this.ref, this.state.tools, 'LM301', this.forceUpdate.bind(this))})
+            this.setState({tool: 'IC', tools: new SCPlace(this.state.spiceSchematic, this.ref, this.state.tools, 'AD549', this.forceUpdate.bind(this))})
         }
     }
 
@@ -164,7 +164,8 @@ export default class SchematicWindow extends React.Component<SchematicWindowProp
             let par = ele.parentElement;
             if (par) {
                 let w = par.offsetWidth;
-                let h = par.offsetHeight;
+                // let h = par.offsetHeight;
+                let h = window.innerHeight - 70
                 this.setState({
                     width: w,
                     height: h

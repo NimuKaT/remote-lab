@@ -2,6 +2,7 @@ import React from "react";
 import { Arc, Group, Line, Rect } from "react-konva";
 import BBIC from "./BBIC";
 import BBNodeObj from "./BBNodeObj";
+import SpiceText from "../../Spice/SpiceText";
 
 interface BBFCompP {
     comp: BBIC
@@ -40,6 +41,8 @@ export default class BBFComp extends React.Component<BBFCompP, BBFCompS> {
         {this.props.comp.getNodes().map((node) => {
             return <BBNodeObj node={node} valid={true}/>
         })}
+        <SpiceText x={this.props.comp.pinCount/4*24-12} y={24} orientation="R0" justification="Center" text={this.props.comp.modelName}
+         fontSize={12}/>
         </Group>
     }
 }

@@ -1,5 +1,7 @@
 import { KonvaEventObject } from "konva/lib/Node";
 import BBTools from "./BBTools";
+import BBResModal from "../Modal/BBResModal";
+import BBCapModal from "../Modal/BBCapModal";
 
 export default class BBPlaceStretch extends BBTools {
     compType: string = 'res'
@@ -7,11 +9,25 @@ export default class BBPlaceStretch extends BBTools {
     firstNode: boolean = true
 
     onInitialise(): void {
+        this.board.deselect()
+        if (this.compType === 'res') {
+            this.board.openModal({hideBackdrop: true}, <BBResModal closeFunc={this.board.getModalClose()} setFunc={this.setValue.bind(this)}/>)
+        }
+        else if (this.compType === 'cap') {
+
+            this.board.openModal({hideBackdrop: true}, <BBCapModal closeFunc={this.board.getModalClose()} setFunc={this.setValue.bind(this)}/>)
+        }
+        this.firstNode = true
+    }
+
+    setValue(val: string) {
+        this.value = val;
         let pos = this.getPointerPos()        
         pos = this.snap(pos)
+        console.log(pos);
+        
         this.mouseRef = pos;
-        this.board.createNewStretchComp(this.compType, pos)
-        this.firstNode = true
+        this.board.createNewStretchComp(this.compType, pos, this.value)
     }
 
     onMouseDown(evt: KonvaEventObject<MouseEvent>): void {
@@ -29,7 +45,7 @@ export default class BBPlaceStretch extends BBTools {
             this.board.moveComponents({x:0,y:0})
             this.board.placeStretchEnd(pos, 1)
             this.board.placeComponents();
-            this.board.createNewStretchComp(this.compType, pos)
+            this.board.createNewStretchComp(this.compType, pos, this.value)
             this.board.moveComponents({x:0,y:0})
             this.mouseRef.x = pos.x
             this.mouseRef.y = pos.y
