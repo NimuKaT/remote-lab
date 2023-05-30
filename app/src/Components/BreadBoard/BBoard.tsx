@@ -432,5 +432,6 @@ export default class BBoard {
         })
 
         console.log(netlist)
+        return netlist
     }
 }

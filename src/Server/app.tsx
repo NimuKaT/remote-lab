@@ -5,6 +5,7 @@ import readline from "readline"
 import fs from "fs/promises"
 import LabSpec from "../labSpec"
 import NetListManger from "./NetListManager"
+import bodyParser from "body-parser"
 
 // const express = require('express')
 // import express, { Express } from "express"
@@ -14,6 +15,8 @@ let niusb = new NIUSBDRiver('/')
 
 express.static("app/build")
 app.use(express.static('app/build'))
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended: true}))
 // app.get('/', (req, res) => {
 //     res.sendFile
 // })
@@ -37,6 +40,14 @@ app.get('/api/currentLab', (req, res, next) => {
 app.get('/api/netlist', (req, res, next) => {
     res.json(netlistmanager.netLists)
 })
+
+app.post('/api/runNetlist', (req, res, next) => {
+    console.log("Received netlist")
+    let netlist = req.body as Array<string>
+    console.log(netlist);
+    
+}
+)
 
 app.get('/api/stop', (req, res, next) => {
     res.send("stopped")

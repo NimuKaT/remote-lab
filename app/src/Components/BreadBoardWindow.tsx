@@ -18,6 +18,7 @@ import FunctionGenerator from "./BreadBoard/Instruments/FunctionGenarator";
 import Oscilloscope from "./BreadBoard/Instruments/Oscilloscope";
 import MultiMeter from "./BreadBoard/Instruments/MultiMeter";
 import BBSelect from "./BreadBoard/BBTool/BBSelect";
+import axios, { AxiosRequestConfig } from "axios";
 
 
 interface BBWindowP {
@@ -206,8 +207,21 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
         if (evt.key === '`') {
             // this.state.board.getNetMap()
             this.state.board.getNetList();
+            this.submitNetList();
         }
 
+    }
+
+    submitNetList() {
+        let data: Array<string> = this.state.board.getNetList();
+        let url = "/api/runNetList";
+        let config: AxiosRequestConfig = {
+            "headers": {
+                Accept: "application/json",
+                "Content-Type": "application/json;charset=UTF-8"
+            }
+        }
+        axios.post(url, data, config);
     }
 
     render(): React.ReactNode {
