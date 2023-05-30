@@ -16,7 +16,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "run": "node ./bin/dist/app.js",
+    "run-build": "npm run build && npm run run",
+    "run": "node ./bin/dist/Server/app.js",
     "start": "react-scripts start",
     "build": "npx tsc",
     "test": "react-scripts test",

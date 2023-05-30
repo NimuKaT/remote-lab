@@ -13,6 +13,7 @@ export interface NIUSBParams {
 export default class NIUSBDRiver {
     executable: string
     delimeter: string
+    prevCmd?: NIUSBParams
 
     constructor(delimeter: string) {
         this.delimeter = delimeter;
@@ -59,7 +60,9 @@ export default class NIUSBDRiver {
         }
         if (!status) {
             this.executeWrite(digitalWriteParams, analogueWriteParams)
+            this.prevCmd = data
         }
+        return status
     }
 
     _formatOutput(data: Array<boolean>): number {

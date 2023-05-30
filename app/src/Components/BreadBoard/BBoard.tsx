@@ -412,12 +412,12 @@ export default class BBoard {
 
         nets.push({prefix: 'V', nodes:[{x: 48, y:-120}, {x:0, y: -120}], value: "15"})
         nets.push({prefix: 'V', nodes:[{x: 192, y:-120}, {x:144, y: -120}], value: "15"})
-        nets.push({prefix: 'V', nodes:[{x: 600, y:-120}, {x:552, y: -120}], value: "15"})
+        nets.push({prefix: 'V', nodes:[{x: 600, y:-120}, {x:552, y: -120}], value: "0"})
 
-        nets.push({prefix: 'R', nodes:[{x: 918, y:-105}, {x:902, y: -105}], value: "100G"})
-        nets.push({prefix: 'R', nodes:[{x: 958, y:-105}, {x:942, y: -105}], value: "100G"})
-        nets.push({prefix: 'R', nodes:[{x: 998, y:-105}, {x:982, y: -105}], value: "100G"})
-        nets.push({prefix: 'R', nodes:[{x: 1038, y:-105}, {x:1022, y: -105}], value: "100G"})
+        nets.push({prefix: 'XU', nodes:[{x: 918, y:-105}, {x:902, y: -105}], value: "OscCH1"})
+        nets.push({prefix: 'XU', nodes:[{x: 958, y:-105}, {x:942, y: -105}], value: "OscCH2"})
+        nets.push({prefix: 'XU', nodes:[{x: 998, y:-105}, {x:982, y: -105}], value: "OscCH3"})
+        nets.push({prefix: 'XU', nodes:[{x: 1038, y:-105}, {x:1022, y: -105}], value: "OscCH4"})
         nets.forEach((net) => {
                 let nodes: Array<string> = []
                 net.nodes.forEach((n) => {

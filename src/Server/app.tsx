@@ -3,6 +3,8 @@ import NIUSBDRiver from "./NIUSBDriver"
 import express from 'express'
 import readline from "readline"
 import fs from "fs/promises"
+import LabSpec from "../labSpec"
+import NetListManger from "./NetListManager"
 
 // const express = require('express')
 // import express, { Express } from "express"
@@ -32,22 +34,35 @@ app.get('/api/currentLab', (req, res, next) => {
     })
 })
 
+app.get('/api/netlist', (req, res, next) => {
+    res.json(netlistmanager.netLists)
+})
+
+app.get('/api/stop', (req, res, next) => {
+    res.send("stopped")
+})
 // Select Lab file
 
 let specificationDir = "./bin/dist/Specifications/"
 let labFile = ""
 let rl = readline.createInterface({input: process.stdin, output: process.stdout})
+let labspec: LabSpec;
+let netlistmanager: NetListManger = new NetListManger();
 function getLabFile() {
     rl.question("Please enter the file name of the lab file to be opened: ", (answer) => {
-        fs.readFile(specificationDir + answer, 'utf-8').then((data) => {
-            // read JSON
-            console.log(JSON.parse(data))
-            labFile = answer
-        }).catch((err) => {
-            // Handle error
-            console.log(err)
-            getLabFile()
-        })
+            readLabFile(answer)
+    })
+}
+
+function readLabFile(fileName: string) {
+    fs.readFile(specificationDir + fileName, 'utf-8').then((data) => {
+            labFile = fileName
+            labspec = JSON.parse(data) as LabSpec;
+            netlistmanager.loadLabSpec(labspec)
+            rl.close()
+    }).catch((err) => {
+        console.log(err);
+        getLabFile()
     })
 }
 
@@ -55,4 +70,5 @@ app.listen(port, () => {
     console.log('Server listening to ' + port)
 })
 
-getLabFile()
+// getLabFile()
+readLabFile("lab01.json")
