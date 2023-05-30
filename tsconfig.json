@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+    "target": "ES2016",
+    "module": "commonjs",
+    "strict": true,
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "outDir": "./bin/dist",
+    // "outFile": "./bin/dist/app.js"
+    
+ 
+    },
+    // "rootDir": "./t",
+    "include": ["./src/**/*"],
+    "exclude": ["./app/**/*", "./bin/dist/**/*"]
+
+   // "forceConsistentCasingIn"
+}

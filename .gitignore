@@ -4,13 +4,14 @@
 /node_modules
 /.pnp
 .pnp.js
-/src/Server/NGSpice
+/bin/NGSpice
 
 # testing
 /coverage
 
 # production
 /build
+/bin/dist
 
 # misc
 .DS_Store
