@@ -1,5 +1,6 @@
 import LabSpec from "../labSpec"
 import { pinConfig } from "../pinConfig";
+import { netListSolver } from "./NetListSolver";
 
 export default class NetListManger {
     labspec?: LabSpec;
@@ -87,6 +88,89 @@ export default class NetListManger {
             
         }
         this.netLists = netLists;
+        
+    }
+
+    compareNetlist(targetNet: Array<string>) {
+        let pinconfig: {"digital": Array<Array<boolean>>,"analogue": Array<Array<boolean>>} = {"digital":[], "analogue": []}
+        let target = this.trimNetlist(targetNet)
+        console.log(target)
+        this.netLists.every((ref) => {
+            let matched = netListSolver(ref.netList, target);
+            if (matched === 0) {
+                console.log(ref.netList)
+                pinconfig = ref.pinConfig;
+                return 0
+            }
+            return 1
+
+        })
+        console.log(pinconfig)
+        return pinconfig
+    }
+
+    trimNetlist(netlist: Array<string>): Array<string> {
+        let nets: Array<Array<string>> = []
+        let revMap: Map<string, Array<number>> = new Map<string, Array<number>>();
+        let netCount: Array<number> = []
+        netlist.forEach((net, i) => {
+            let prefix = net.charAt(0);
+            let currNets: Array<string> = [];
+            let words = net.split(" ")
+            if (prefix === 'R' || prefix === 'C' || prefix === 'V') {
+                currNets.push(words[1])
+                if (revMap.has(words[1])) {
+                    revMap.get(words[1])?.push(i)
+                } else {
+                    revMap.set(words[1], [i])
+                }
+                currNets.push(words[2])
+                if (revMap.has(words[2])) {
+                    revMap.get(words[2])?.push(i)
+                } else {
+                    revMap.set(words[2], [i])
+                }
+                netCount.push(2)
+
+            }
+            if (prefix === 'X' || prefix === 'U') {
+                words.forEach((word, index) => {
+                    if (index !== 0 && index !== words.length-1) {
+                        currNets.push(word)
+                        if (revMap.has(word)) {
+                            revMap.get(word)?.push(i)
+                        } else {
+                            revMap.set(word, [i])
+                        }
+                    }
+                })
+                netCount.push(words.length-2)
+            }
+            nets.push(currNets)
+        })
+        revMap.forEach((comps, nets) => {
+            if (comps.length === 1) {
+                // Find index of comp
+                netCount[comps[0]] -= 1;
+            }
+        })
+        let deletingNets: Array<number> = []
+        netCount.forEach((count, i) => {
+            if (count <= 1) {
+                deletingNets.push(i)
+            }
+        })
+        if (deletingNets.length !== 0) {
+            let newNetList: Array<string> = []
+            netlist.forEach((net, index) => {
+            if (deletingNets.findIndex((value) => {return value===index}) === -1) {
+                newNetList.push(net)
+            }})
+            return this.trimNetlist(newNetList)
+        }
+        else {
+            return netlist;
+        }
         
     }
 }

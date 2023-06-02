@@ -62,6 +62,13 @@ export default class BBCompSearch {
         {value: '8.2k'},
         {value: '82k'},
         {value: '820k'},
+
+        {value: '5'},
+        {value: '50'},
+        {value: '500'},
+        {value: '5k'},
+        {value: '50k'},
+        {value: '500k'},
     ]
 
     capItems: Array<string> = [
@@ -119,6 +126,25 @@ export default class BBCompSearch {
         "6.8u",
         "68u",
         "680u",
+
+        "2p",
+        "20p",
+        "200p",
+        "2n",
+        "20n",
+        "200n",
+        "2u",
+        "20u",
+        "200u",
+        "3p",
+        "30p",
+        "300p",
+        "3n",
+        "30n",
+        "300n",
+        "3u",
+        "30u",
+        "300u",
     ]
 
     icItems: Map<string, number> = new Map<string, number>();

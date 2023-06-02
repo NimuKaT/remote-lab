@@ -19,11 +19,13 @@ import Oscilloscope from "./BreadBoard/Instruments/Oscilloscope";
 import MultiMeter from "./BreadBoard/Instruments/MultiMeter";
 import BBSelect from "./BreadBoard/BBTool/BBSelect";
 import axios, { AxiosRequestConfig } from "axios";
+import SnackbarHook from "./SnackbarHook"
 
 
 interface BBWindowP {
     isActive: boolean,
-    modalHook?: ModalHook
+    modalHook?: ModalHook,
+    SnackbarHook?: SnackbarHook
 }
 
 interface BBWindowS {
@@ -60,7 +62,7 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
         this.state = {
             width: 50,
             height: 50,
-            scale: 3,
+            scale: 1.6,
             board: board,
             hasModalRef: false,
             currTool: undefined,
@@ -221,7 +223,15 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
                 "Content-Type": "application/json;charset=UTF-8"
             }
         }
-        axios.post(url, data, config);
+        axios.post(url, data, config).then((value) => {
+            console.log(this.props.SnackbarHook)
+            if (value.data === "ok") {
+                console.log("ok")
+                this.props.SnackbarHook?.setSnackbar("Successfully implemented circuit on PCB!", "success", 6000);
+            } else {
+                this.props.SnackbarHook?.setSnackbar("Failed to implement circuit on PCB!", 'error', 6000)
+            }
+        });
     }
 
     render(): React.ReactNode {

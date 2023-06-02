@@ -21,7 +21,7 @@ export default class NIUSBDRiver {
     }
 
     writeToDevice(data: NIUSBParams, callback?: ()  => void) {
-        console.log(data)
+        // console.log(data)
         let status = 0
         let digitalWriteParams: Array<string> = []
         let analogueWriteParams: Array<string> = []
@@ -39,10 +39,11 @@ export default class NIUSBDRiver {
                     return false
                 }
             })
+            // console.log(data)
         }
         else {
             status = 1;
-        console.log(data)
+            console.log(data)
             console.log("Attempted to write to device with invalid params")
         }
         if (!status && data.analogue.length <= 1) {
@@ -59,7 +60,8 @@ export default class NIUSBDRiver {
             })
         }
         if (!status) {
-            this.executeWrite(digitalWriteParams, analogueWriteParams)
+            this.executeWrite(digitalWriteParams, analogueWriteParams, callback)
+            // console.log(data)
             this.prevCmd = data
         }
         return status
@@ -83,7 +85,15 @@ export default class NIUSBDRiver {
                 console.log(stderr)
             }
             console.log(stdout)
-            process = execFile(this.executable, ['1', digitalWrite[1]])
+            process = execFile(this.executable, ['1', digitalWrite[1]], null, (err, stdout, stderr) => {
+                if (err) {
+                    console.log(stderr);
+                }
+                console.log(stdout);
+                if (callback !== undefined) {
+                    callback();
+                }
+            })
         })
         
         

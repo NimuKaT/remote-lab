@@ -13,6 +13,9 @@ let app = express()
 let port = 3000
 let niusb = new NIUSBDRiver('/')
 
+
+let prevPin = {digital: [[false,false,false,false,false,false,false,false],[false,false,false,false,false,false,false,false]], analogue: [[false, false]]}
+
 express.static("app/build")
 app.use(express.static('app/build'))
 app.use(bodyParser.json())
@@ -45,11 +48,37 @@ app.post('/api/runNetlist', (req, res, next) => {
     console.log("Received netlist")
     let netlist = req.body as Array<string>
     console.log(netlist);
+    let pinconfig = netlistmanager.compareNetlist(netlist);
     
+    if (pinconfig.digital.length > 0) {
+    // HARD CODE EXECUTE SEQUENCE
+    
+    prevPin.digital[0][0] = false
+    niusb.writeToDevice(prevPin, ()=> {
+    prevPin.digital[1][3] = false
+    niusb.writeToDevice(prevPin, () => {
+    pinconfig.digital[0][0] = false
+    pinconfig.digital[1][3] = false
+    niusb.writeToDevice(pinconfig, () => {
+    pinconfig.digital[1][3] = true
+    niusb.writeToDevice(pinconfig, () => {
+    pinconfig.digital[0][0] = true
+    niusb.writeToDevice(pinconfig)}) }) }) 
+    prevPin = pinconfig
+    })
+    res.send("ok")
+    } else {
+        res.send("fail")
+    }
+
 }
 )
 
 app.get('/api/stop', (req, res, next) => {
+    prevPin.digital[0][0] = false
+    niusb.writeToDevice(prevPin, ()=> {
+    prevPin.digital[1][3] = false
+    niusb.writeToDevice(prevPin)})
     res.send("stopped")
 })
 // Select Lab file

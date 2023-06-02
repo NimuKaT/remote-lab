@@ -287,9 +287,15 @@ export default class BBoard {
 
         netMap.set("ch1+", "0")
         netMap.set("ch2-", "0")
-        revMap.set("0", ["ch1+", "ch2-"])
+        netMap.set("Sig-", "0")
+        netMap.set("Och1-", "0")
+        netMap.set("Och2-", "0")
+        revMap.set("0", ["ch1+", "ch2-", "Sig-", "Och1-", "Och2-"])
 
         this.wires.forEach((wire) => {
+            // console.log(revMap)
+            console.log(netMap);
+            
             if (!wire.deleted) {
                 let points = wire.getPoints();
                 let netName1 = this.getNetName(points[0], points[1]);
@@ -309,7 +315,7 @@ export default class BBoard {
                     }
                 }
                 let netName2 = this.getNetName(points[2], points[3])
-                if (netName2 !== '') {
+                if (netName2 !== '' && netName1 !== netName2) {
                     if (!netMap.has(netName2)) {
                         // Case where either both nets haven't been connected or only the first is connected
                         netMap.set(netName2, newNet)
@@ -324,7 +330,11 @@ export default class BBoard {
                         if (!hasSet) {
                             // Merge nets
                             let tempNet = netMap.get(netName2)
-                            if (tempNet !== undefined) {
+                            if (netName2 === '0') {
+                                newNet = tempNet;
+                                tempNet = netMap.get(netName1)
+                            }
+                            if (tempNet !== undefined && newNet !== undefined) {
                                 let revArray = revMap.get(tempNet)
                                 let targetArray = revMap.get(newNet)
                                 revArray?.forEach((net) => {

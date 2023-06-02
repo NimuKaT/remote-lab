@@ -48,12 +48,19 @@ export default class BBWireModal extends React.Component<BBWireModalP,BBWireModa
             Set Wire Colour
         </DialogTitle>
         <DialogContent dividers>
-            <Grid container spacing={{xs:2,md:3}} columns={{xs:4,sm:8,md:12}}>
+            {/* <Grid container spacing={{xs:2,md:3,p:0}} columns={{xs:4,sm:8,md:12}}>
                 {colors.map((item, index) => {
-                return <Grid item container xs={2} sm={4} md={4} key={index} sx={{backgroundColor: item}} margin={0} paddingTop={0}><Button sx={{width:100, height:30}}  fullWidth size="medium" onClick={()=>{this.props.setFunc(item);this.props.closeFunc()}}></Button></Grid>
+                return <Grid item container xs={2} sm={4} md={4} key={index} sx={{backgroundColor: item, p: 0}} margin={0} paddingTop={0} paddingBottom={0}>
+                    <Button sx={{minwidth:140, minheight:80, width:300}}  fullWidth size="medium" onClick={()=>{this.props.setFunc(item);this.props.closeFunc()}}/>
+                    </Grid>
                     // return <><ListItemButton key={index} onClick={() =>{this.props.setFunc(item);this.props.closeFunc();}} ><ListItemText primary={item}/></ListItemButton>{this.state.result.length === index+1 ? '' : <Divider />}</>
                 })}
-            </Grid>
+            </Grid> */}
+            <Box sx={{display: 'flex', flexWrap: 'wrap', px:1, my:0, m:1, maxWidth: 800, justifyContent:'center'}}>
+                {colors.map((item, index) => {
+                    return <Box sx={{bgColor: item}}><Button sx={{backgroundColor: item,minWidth:150,minHeight:80, width:'100%'}} onClick={() =>{this.props.setFunc(item);this.props.closeFunc();}}/></Box>
+                })}
+            </Box>
 
         </DialogContent>
         </>
