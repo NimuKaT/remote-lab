@@ -68,7 +68,8 @@ export default class BBWireTool extends BBTools {
     }
 
     onMouseMove(evt: KonvaEventObject<MouseEvent>): void {
-        if (!this.isFirstnode) {
+        if (!this.isFirstnode && (Date.now() - this.lastMoved > this.moveInterval)) {
+            this.lastMoved = Date.now()
             let pos = this.getPointerPos();
             let rawPos = {x: pos.x, y: pos.y}
             let Spos = this.snap(pos)

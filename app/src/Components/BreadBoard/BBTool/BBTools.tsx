@@ -13,6 +13,9 @@ export default abstract class BBTools {
     stageRef: React.RefObject<Stage>;
     board: BBoard;
     moveThreshold: number = 0.5;
+    lastMoved: number = 0;
+    lastEvt?: KonvaEventObject<MouseEvent>;
+    moveInterval: number = 10;
 
     constructor(board: BBoard, stageRef: React.RefObject<Stage>) {
         this.stageRef = stageRef;

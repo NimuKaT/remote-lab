@@ -20,6 +20,7 @@ import MultiMeter from "./BreadBoard/Instruments/MultiMeter";
 import BBSelect from "./BreadBoard/BBTool/BBSelect";
 import axios, { AxiosRequestConfig } from "axios";
 import SnackbarHook from "./SnackbarHook"
+import BBToolBar from "./BBToolBar";
 
 
 interface BBWindowP {
@@ -243,6 +244,7 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
                 className="BreadBoardWindow"
                 sx={{height: "100%", flexGrow: 1}}
             >
+                <BBToolBar/>
                 <Stage
                 ref={this.stageRef}
                     width={this.state.width}
