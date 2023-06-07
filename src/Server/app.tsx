@@ -68,6 +68,10 @@ app.post('/api/runNetlist', (req, res, next) => {
     })
     res.send("ok")
     } else {
+        prevPin.digital[0][0] = false
+        niusb.writeToDevice(prevPin, ()=> {
+        prevPin.digital[1][3] = false
+        niusb.writeToDevice(prevPin)})
         res.send("fail")
     }
 

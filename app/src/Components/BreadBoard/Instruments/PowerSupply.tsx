@@ -69,13 +69,13 @@ export default class PowerSupply extends React.Component<PowerSupplyP, PowerSupp
             <Rect x={165} y={46} width={110} height={12} fill="#aaaaaa" cornerRadius={2}/>
             <SpiceText x={218} y={53} text="ch2" justification="Center" color="black" fontSize={14}/>
 
-            <Rect x={30} y={140} width={90} height={18} fill="#aaaaaa" cornerRadius={2}/>
-            <SpiceText x={50} y={150} text="-" justification="Center" color="black" fontSize={32}/>
-            <SpiceText x={98} y={150} text="+" justification="Center" color="red" fontSize={32}/>
+            <Rect x={30} y={120} width={90} height={18} fill="#aaaaaa" cornerRadius={2}/>
+            <SpiceText x={50} y={130} text="-" justification="Center" color="black" fontSize={32}/>
+            <SpiceText x={98} y={130} text="+" justification="Center" color="red" fontSize={32}/>
 
-            <Rect x={174} y={140} width={90} height={18} fill="#aaaaaa" cornerRadius={2}/>
-            <SpiceText x={194} y={150} text="-" justification="Center" color="black" fontSize={32}/>
-            <SpiceText x={242} y={150} text="+" justification="Center" color="red" fontSize={32}/>
+            <Rect x={174} y={120} width={90} height={18} fill="#aaaaaa" cornerRadius={2}/>
+            <SpiceText x={194} y={130} text="-" justification="Center" color="black" fontSize={32}/>
+            <SpiceText x={242} y={130} text="+" justification="Center" color="red" fontSize={32}/>
 
             <PSbutton x={135} y={90}/>
             <PSbutton x={155} y={90}/>

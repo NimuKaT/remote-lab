@@ -230,7 +230,7 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
                 console.log("ok")
                 this.props.SnackbarHook?.setSnackbar("Successfully implemented circuit on PCB!", "success", 6000);
             } else {
-                this.props.SnackbarHook?.setSnackbar("Failed to implement circuit on PCB!", 'error', 6000)
+                this.props.SnackbarHook?.setSnackbar("Failed to implement circuit on PCB! The circuit has been turned off.", 'error', 6000)
             }
         });
     }
@@ -257,7 +257,7 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
                     onMouseUp={this.onMouseUp.bind(this)}
                 >
                     <Layer x={120} y={120}>
-                        <MultiMeter x={-450} y={-250}/>
+                        {/* <MultiMeter x={-450} y={-250}/> */}
                         <PowerSupply x={-50} y={-250}/>
                         <FunctionGenerator x={300} y={-250}/>
                         <Oscilloscope x={700} y={-300}/>
@@ -268,11 +268,11 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
                             return <Text key={index} x={lable.pos.x} y={lable.pos.y} text={lable.text}
                             fontSize={18} width={24} align={"center"}/>
                         })}
-                        {this.state.board.getIC().map((ic) => {
-                            return <BBFComp comp={ic}/>
-                        })}
                         {this.state.board.getWires().map((wire) => {
                             return <BBWireObj wire={wire}/>
+                        })}
+                        {this.state.board.getIC().map((ic) => {
+                            return <BBFComp comp={ic}/>
                         })}
                         {this.state.board.getStretch().map((comp) => {
                             return <BBStretchObj comp={comp}/>

@@ -62,9 +62,9 @@ export default class FunctionGenerator extends React.Component<FunctionGenerator
             <PSknob minAng={-60} maxAng={240} x={190} y={130} setNum={(num: number)=>{}} initAng={240} radius={15} strokeWidth={2}/>
             <SpiceText x={190} y={105} text="AMPL" justification="Center" fontSize={6}/>
 
-            <Rect x={230} y={140} width={90} height={18} fill="#aaaaaa" cornerRadius={2}/>
-            <SpiceText x={252} y={150} text="-" justification="Center" color="black" fontSize={32}/>
-            <SpiceText x={298} y={150} text="+" justification="Center" color="red" fontSize={32}/>
+            <Rect x={230} y={120} width={90} height={18} fill="#aaaaaa" cornerRadius={2}/>
+            <SpiceText x={252} y={130} text="-" justification="Center" color="black" fontSize={32}/>
+            <SpiceText x={298} y={130} text="+" justification="Center" color="red" fontSize={32}/>
         </Group>
     }
 

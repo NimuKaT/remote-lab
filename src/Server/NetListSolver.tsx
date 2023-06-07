@@ -150,7 +150,7 @@ function testCompMatch(refComps: Array<component>, targetComps: Array<component>
     // console.log(refNets)
     while (testC < testIndexes.length) {
         testI = testIndexes[testC];
-        while (targetCompMapped[testI] >= 0 && testC < testIndexes.length) {
+        while (targetCompMapped[testI] >= 0 && testC + 1 < testIndexes.length) {
             testC++;
             testI = testIndexes[testC];
         }

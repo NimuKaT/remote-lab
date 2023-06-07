@@ -75,11 +75,17 @@ export default class BBWireTool extends BBTools {
             let Spos = this.snap(pos)
             let n = this.board.onBBNode(Spos);
             if (n) {
-                this.board.placeWireEnd(Spos, 1)
+                this.board.placeWireEnd(n, 1)
                 this.board.foreceUpdate();
             }
             else {
-                this.board.placeWireEnd(rawPos, 1)
+                n = this.board.onBBNode(rawPos);
+                if (n) {
+                    this.board.placeWireEnd(n, 1)
+                }
+                else {
+                    this.board.placeWireEnd(rawPos, 1)
+                }
                 this.board.foreceUpdate();
             }
         }

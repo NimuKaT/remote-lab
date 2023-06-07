@@ -76,14 +76,14 @@ export default class BBoard {
         }
         // Power Delivery
 
-        this.nodes.push(new BBNode({x:0, y: -120}, "ch1-", 'black', 1))
-        this.nodes.push(new BBNode({x:48, y: -120}, "ch1+", 'red', 1))
-        this.nodes.push(new BBNode({x:144, y: -120}, "ch2-", 'black', 1))
-        this.nodes.push(new BBNode({x:192, y: -120}, "ch2+", 'red', 1))
+        this.nodes.push(new BBNode({x:0, y: -100}, "ch1-", 'black', 1))
+        this.nodes.push(new BBNode({x:48, y: -100}, "ch1+", 'red', 1))
+        this.nodes.push(new BBNode({x:144, y: -100}, "ch2-", 'black', 1))
+        this.nodes.push(new BBNode({x:192, y: -100}, "ch2+", 'red', 1))
 
         // Signal Generator
-        this.nodes.push(new BBNode({x:552, y: -120}, "Sig-", 'black', 1))
-        this.nodes.push(new BBNode({x:600, y: -120}, "Sig+", 'red', 1))
+        this.nodes.push(new BBNode({x:552, y: -100}, "Sig-", 'black', 1))
+        this.nodes.push(new BBNode({x:600, y: -100}, "Sig+", 'red', 1))
         // this.nodes.push(new BBNode({x:700, y:-159}, "test", "green", 1))
         // Oscilloscope
         this.nodes.push(new BBNode({x:902, y: -105}, "Och1-", 'black', 1))
@@ -96,12 +96,12 @@ export default class BBoard {
         this.nodes.push(new BBNode({x:1038, y: -105}, "Och4+", 'red', 1))
         // MutliMeter
         // this.nodes.push(new BBNode({x:-135, y: -225}, "Mch1+", 'red', 1))
-        this.nodes.push(new BBNode({x:-155, y: -125}, "Mch1-", 'black', 1))
-        this.nodes.push(new BBNode({x:-155, y: -175}, "Mch1+", 'red', 1))
+        // this.nodes.push(new BBNode({x:-155, y: -125}, "Mch1-", 'black', 1))
+        // this.nodes.push(new BBNode({x:-155, y: -175}, "Mch1+", 'red', 1))
         
-        this.nodes.push(new BBNode({x:-115, y: -225}, "Mch1+", 'red', 1))
-        this.nodes.push(new BBNode({x:-115, y: -175}, "Mch1-", 'black', 1))
-        this.nodes.push(new BBNode({x:-115, y: -125}, "Mch1+", 'red', 1))
+        // this.nodes.push(new BBNode({x:-115, y: -225}, "Mch1+", 'red', 1))
+        // this.nodes.push(new BBNode({x:-115, y: -175}, "Mch1-", 'black', 1))
+        // this.nodes.push(new BBNode({x:-115, y: -125}, "Mch1+", 'red', 1))
 
     }
 
@@ -299,65 +299,107 @@ export default class BBoard {
             if (!wire.deleted) {
                 let points = wire.getPoints();
                 let netName1 = this.getNetName(points[0], points[1]);
+                let netName2 = this.getNetName(points[2], points[3])
                 let newNet: string | undefined = "W"+count;
                 let hasSet = false
-                if (netName1 !== '') {
-                    if (!netMap.has(netName1)) {
-                        netMap.set(netName1, newNet)
-                        hasSet = true
-                        revMap.set(newNet, [netName1])
-                    } else {
-                        newNet = netMap.get(netName1);
-                        if (newNet === undefined) {
-                            // SHOULD NEVER RUN
-                            newNet = "W"+count
-                        }
+                let hasNet1 = netMap.has(netName1)
+                let hasNet2 = netMap.has(netName2);
+                if (!hasNet1 && !hasNet2) {
+                    netMap.set(netName1, newNet);
+                    netMap.set(netName2, newNet);
+                    revMap.set(newNet, [netName1, netName2]);
+                    hasSet = true;
+                } else if (!hasNet1) {
+                    newNet = netMap.get(netName2);
+                    if (newNet !== undefined) {
+                        netMap.set(netName1, newNet); 
+                        revMap.get(newNet)?.push(netName1);
                     }
-                }
-                let netName2 = this.getNetName(points[2], points[3])
-                if (netName2 !== '' && netName1 !== netName2) {
-                    if (!netMap.has(netName2)) {
-                        // Case where either both nets haven't been connected or only the first is connected
-                        netMap.set(netName2, newNet)
-                        hasSet = true
-                        let revArray = revMap.get(newNet);
-                        if (revArray) {
-                            revArray.push(netName2)
+                } else if (!hasNet2) {
+                    newNet = netMap.get(netName1);
+                    if (newNet !== undefined) {
+                        netMap.set(netName2, newNet);
+                        revMap.get(newNet)?.push(netName2)
+                    }
+                } else {
+                    let net1 = netMap.get(netName1);
+                    let net2 = netMap.get(netName2);
+                    if (net1 !== net2) {
+                        if (net1 !== undefined && net2 !== undefined) {
+                            let net1c = net1
+                            let net2c = net2
+                            if (net2 === '0') {
+                                revMap.get(net1)?.forEach((n) => {
+                                    netMap.set(n, net2c)
+                                })
+                                revMap.delete(net1)
+                            } else {
+                                revMap.get(net2)?.forEach((n) => {
+                                    netMap.set(n, net1c)
+                                })
+                            }
                         }
 
-                    } else {
-                        // Case where both nets are connected to other nets
-                        if (!hasSet) {
-                            // Merge nets
-                            let tempNet = netMap.get(netName2)
-                            if (netName2 === '0') {
-                                newNet = tempNet;
-                                tempNet = netMap.get(netName1)
-                            }
-                            if (tempNet !== undefined && newNet !== undefined) {
-                                let revArray = revMap.get(tempNet)
-                                let targetArray = revMap.get(newNet)
-                                revArray?.forEach((net) => {
-                                    if (newNet !== undefined) {
-                                        netMap.set(net, newNet)
-                                        targetArray?.push(net)
-                                    }
-                                })
-                                revMap.delete(tempNet);
-                            }
-                        } else {
-                            // Case where first is not connected and second is
-                            // Delete previous newNet and assign to existing one
-                            revMap.delete(newNet);
-                            newNet = netMap.get(netName2)
-                            if (newNet === undefined) {
-                                // SHOULD NEVER RUN
-                                newNet = "W"+count
-                            }
-                            netMap.set(netName1, newNet);
-                        }
                     }
+
                 }
+
+                // if (netName1 !== '') {
+                //     if (!netMap.has(netName1)) {
+                //         netMap.set(netName1, newNet)
+                //         hasSet = true
+                //         revMap.set(newNet, [netName1])
+                //     } else {
+                //         newNet = netMap.get(netName1);
+                //         if (newNet === undefined) {
+                //             // SHOULD NEVER RUN
+                //             newNet = "W"+count
+                //         }
+                //     }
+                // }
+                // if (netName2 !== '' && netName1 !== netName2) {
+                //     if (!netMap.has(netName2)) {
+                //         // Case where either both nets haven't been connected or only the first is connected
+                //         netMap.set(netName2, newNet)
+                //         hasSet = true
+                //         let revArray = revMap.get(newNet);
+                //         if (revArray) {
+                //             revArray.push(netName2)
+                //         }
+
+                //     } else {
+                //         // Case where both nets are connected to other nets
+                //         if (!hasSet) {
+                //             // Merge nets
+                //             let tempNet = netMap.get(netName2)
+                //             if (netName2 === '0') {
+                //                 newNet = tempNet;
+                //                 tempNet = netMap.get(netName1)
+                //             }
+                //             if (tempNet !== undefined && newNet !== undefined) {
+                //                 let revArray = revMap.get(tempNet)
+                //                 let targetArray = revMap.get(newNet)
+                //                 revArray?.forEach((net) => {
+                //                     if (newNet !== undefined) {
+                //                         netMap.set(net, newNet)
+                //                         targetArray?.push(net)
+                //                     }
+                //                 })
+                //                 revMap.delete(tempNet);
+                //             }
+                //         } else {
+                //             // Case where first is not connected and second is
+                //             // Delete previous newNet and assign to existing one
+                //             revMap.delete(newNet);
+                //             newNet = netMap.get(netName2)
+                //             if (newNet === undefined) {
+                //                 // SHOULD NEVER RUN
+                //                 newNet = "W"+count
+                //             }
+                //             netMap.set(netName1, newNet);
+                //         }
+                //     }
+                // }
                 if (hasSet) {
                     count++;
                 }
@@ -421,8 +463,8 @@ export default class BBoard {
         })
 
         nets.push({prefix: 'V', nodes:[{x: 48, y:-120}, {x:0, y: -120}], value: "15"})
-        nets.push({prefix: 'V', nodes:[{x: 192, y:-120}, {x:144, y: -120}], value: "15"})
-        nets.push({prefix: 'V', nodes:[{x: 600, y:-120}, {x:552, y: -120}], value: "0"})
+        nets.push({prefix: 'V', nodes:[{x: 192, y:-100}, {x:144, y: -100}], value: "15"})
+        nets.push({prefix: 'V', nodes:[{x: 600, y:-100}, {x:552, y: -100}], value: "0"})
 
         nets.push({prefix: 'XU', nodes:[{x: 918, y:-105}, {x:902, y: -105}], value: "OscCH1"})
         nets.push({prefix: 'XU', nodes:[{x: 958, y:-105}, {x:942, y: -105}], value: "OscCH2"})
