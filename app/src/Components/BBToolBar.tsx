@@ -55,6 +55,7 @@ export default class BBToolBar extends React.Component<BBToolBarP, BBToolBarS> {
                         <Delete sx={{flexGrow: 1}}/>
                     </Button>
                     <Typography>Delete</Typography>
+                    <Typography fontSize={12}>D</Typography>
                     </Stack>
                 </Box>
                 </Stack>
@@ -70,6 +71,7 @@ export default class BBToolBar extends React.Component<BBToolBarP, BBToolBarS> {
                         </SvgIcon>
                     </Button>
                     <Typography>Wire</Typography>
+                    <Typography fontSize={12}>W</Typography>
                     </Stack>
                 </Box>
                 <Box>
@@ -83,6 +85,7 @@ export default class BBToolBar extends React.Component<BBToolBarP, BBToolBarS> {
                         </SvgIcon>
                     </Button>
                     <Typography>Resistor</Typography>
+                    <Typography fontSize={12}>R</Typography>
                     </Stack>
                 </Box>
                 <Box>
@@ -99,6 +102,7 @@ export default class BBToolBar extends React.Component<BBToolBarP, BBToolBarS> {
                         </SvgIcon>
                     </Button>
                     <Typography>Capacitor</Typography>
+                    <Typography fontSize={12}>C</Typography>
                     </Stack>
                 </Box>
                 <Box>
@@ -109,6 +113,7 @@ export default class BBToolBar extends React.Component<BBToolBarP, BBToolBarS> {
                         <Memory sx={{flexGrow: 1}}/>
                     </Button>
                     <Typography>IC</Typography>
+                    <Typography fontSize={12}>Q</Typography>
                     </Stack>
                 </Box>
                 </Stack>
