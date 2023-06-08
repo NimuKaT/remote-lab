@@ -50,6 +50,7 @@ export default class BBPlaceStretch extends BBTools {
             this.mouseRef.x = pos.x
             this.mouseRef.y = pos.y
             this.firstNode = true;
+            this.board.ref.setTool("Stop")
         }
     }
 

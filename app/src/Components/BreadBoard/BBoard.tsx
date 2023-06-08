@@ -119,11 +119,21 @@ export default class BBoard {
 
     getModalClose() {
         if (this.modalRef) {
-            return this.modalRef.getClose()
+            return (() => {if (this.modalRef) {this.modalRef.getClose()()};  this.checkModalResponse()}).bind(this)
         }
         else {
             return () => {}
         }
+    }
+
+    checkModalResponse() {
+        console.log("Checking modal response");
+        console.log(this.ref?.state.toolName);
+        
+        
+        // if (this.ref?.state.currTool?.gotModalResponse === false) {
+        //     this.ref?.setTool("Pan")
+        // }
     }
 
     createNewStaticComp(modelName: string, pos: Vector2d, pin: number, isPlaced?: boolean) {
@@ -152,12 +162,14 @@ export default class BBoard {
         this.selectedWire.forEach((wire) => {
             wire.placeNode(pos, index);
         })
+        // this.ref.setTool("Stop")
     }
 
     placeStretchEnd(pos:Vector2d, index: number) {
         this.selectedStretch.forEach((comp) => {
             comp.placeNode(index, pos);
         })
+        // this.ref.setTool("Stop")
     }
 
     select(x: number, y: number, w: number, h: number) {
@@ -211,6 +223,7 @@ export default class BBoard {
         this.selectedIC = [];
         this.selectedWire = [];
         this.selectedStretch = []
+        this.ref.setTool("Stop")
     }
 
     cancelMovement() {
@@ -240,6 +253,7 @@ export default class BBoard {
             wire.delete()
         })
         this.selectedWire = []
+        this.ref.stopSim();
         this.foreceUpdate()
     }
 
@@ -462,7 +476,7 @@ export default class BBoard {
             }
         })
 
-        nets.push({prefix: 'V', nodes:[{x: 48, y:-120}, {x:0, y: -120}], value: "15"})
+        nets.push({prefix: 'V', nodes:[{x: 48, y:-100}, {x:0, y: -100}], value: "15"})
         nets.push({prefix: 'V', nodes:[{x: 192, y:-100}, {x:144, y: -100}], value: "15"})
         nets.push({prefix: 'V', nodes:[{x: 600, y:-100}, {x:552, y: -100}], value: "0"})
 

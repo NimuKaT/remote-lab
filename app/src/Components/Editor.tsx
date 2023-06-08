@@ -5,7 +5,8 @@ import { Menu as MenuIcon } from "@mui/icons-material";
 
 interface EditorS {
     schematic: boolean
-    breadboard: boolean
+    breadboard: boolean,
+    oscilloscope: boolean
 }
 
 export default class Editor extends React.Component<{}, EditorS> {
@@ -14,7 +15,8 @@ export default class Editor extends React.Component<{}, EditorS> {
         super(P, S)
         this.state = {
             schematic: false,
-            breadboard: true
+            breadboard: true,
+            oscilloscope: false
         }
     }
 
@@ -22,15 +24,25 @@ export default class Editor extends React.Component<{}, EditorS> {
     setSchematic() {
         this.setState({
             schematic: true,
-            breadboard: false
+            breadboard: false,
+            oscilloscope: false
         })
     }
 
     setBreadboard() {
         this.setState({
             schematic: false,
-            breadboard: true
+            breadboard: true,
+            oscilloscope: false
         })
+    }
+
+    setOscilloscope() {
+      this.setState({
+            schematic: false,
+            breadboard: false,
+            oscilloscope: true
+      })
     }
 
 
@@ -67,21 +79,27 @@ export default class Editor extends React.Component<{}, EditorS> {
             Editor
           </Typography>
           <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}>
-            <Button
+            {/* <Button
                 key='schematic'
                 onClick={this.setSchematic.bind(this)}
                 sx={{my: 2, color: 'white', display: 'block'}}
                 disabled={this.state.schematic}
-            >Schematic</Button>
+            >Schematic</Button> */}
             <Button
                 key='breadboard'
                 onClick={this.setBreadboard.bind(this)}
                 sx={{my: 2, color: 'white', display: 'block'}}
                 disabled={this.state.breadboard}
             >Breadboard</Button>
+            <Button
+                key='Oscilloscope'
+                onClick={this.setOscilloscope.bind(this)}
+                sx={{my: 2, color: 'white', display: 'block'}}
+                disabled={this.state.oscilloscope}
+            >Oscilloscope</Button>
 
           </Box>
-          <Button color='inherit'>Login</Button>
+          {/* <Button color='inherit'>Login</Button> */}
         </Toolbar>
       </AppBar>
       </Box>
@@ -101,7 +119,7 @@ export default class Editor extends React.Component<{}, EditorS> {
         </a>
       </header> */}
 
-      <AppContainer schematic={this.state.schematic} breadboard={this.state.breadboard}></AppContainer>
+      <AppContainer schematic={this.state.schematic} breadboard={this.state.breadboard} oscilloscope={this.state.oscilloscope}></AppContainer>
       </>       
     }
 }

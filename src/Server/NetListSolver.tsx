@@ -140,7 +140,7 @@ function testCompMatch(refComps: Array<component>, targetComps: Array<component>
 
     let testIndexes: Array<number> = matchedIndex[currComp];
     let testC = 0;
-    let testI: number;
+    let testI: number = 0;
 
     let changes: Map<number, number> = new Map<number, number>();
     let rchanges: Map<number, number> = new Map<number, number>();
@@ -148,12 +148,19 @@ function testCompMatch(refComps: Array<component>, targetComps: Array<component>
     let refNets = refComps[currComp].relNodes;
     let isReversed = false
     // console.log(refNets)
+
+    // console.log("Ref Comp number: %d", currComp);
+    // console.log("testIndexes: ", testIndexes);
+    // console.log("testIndexes.length: %d", testIndexes.length);
+    
+
     while (testC < testIndexes.length) {
         testI = testIndexes[testC];
         while (targetCompMapped[testI] >= 0 && testC + 1 < testIndexes.length) {
             testC++;
             testI = testIndexes[testC];
         }
+        // console.log("Testing target comp index: %d", testI)
         let targetNets = targetComps[testI].relNodes;
         if (isReversed) {
             let temp = targetNets;
@@ -256,7 +263,9 @@ function testCompMatch(refComps: Array<component>, targetComps: Array<component>
                             // console.log(refComps[currComp])
                             // console.log(isReversed);
                             
-                            return bMap[targetNets[i]]
+                            testC++;
+                            isReversed = false
+                            // return bMap[targetNets[i]]
                         }
                         break
                     }
@@ -299,6 +308,13 @@ function testCompMatch(refComps: Array<component>, targetComps: Array<component>
         }
 
     }
+
+    // console.log("curr COmp: %d", currComp)
+    // console.log("Exit with error with testC: %d", testC)
+    // console.log("testIndex.legth: %d, testI: %d", testIndexes.length, testI)
+    // console.log("match index: ")
+    // console.log(matchedIndex);
+    // console.log("\n")
 
     return -1;
 }

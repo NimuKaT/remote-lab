@@ -10,12 +10,14 @@ export default class BBWireTool extends BBTools {
     onInitialise(): void {
         this.board.deselect()
         this.isFirstnode = true;
+        this.gotModalResponse = false;
         this.board.openModal({hideBackdrop: true},
             <BBWireModal closeFunc={this.board.getModalClose()} setFunc={this.setColor.bind(this)}/>)
     }
 
     setColor(color: string) {
         this.color = color
+        this.gotModalResponse = true;
     }
 
     onToolChange(newTool: BBTools): void {
@@ -55,6 +57,7 @@ export default class BBWireTool extends BBTools {
                     this.board.placeWireEnd(pos, 1)
                     this.isFirstnode = true;
                     this.board.placeComponents();
+                    this.board.ref?.setTool("Stop")
                 }
                 this.board.foreceUpdate();
             }

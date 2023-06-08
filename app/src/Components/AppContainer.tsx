@@ -5,10 +5,12 @@ import BreadBoardWindow from "./BreadBoardWindow";
 import SchematicWindow from "./SchematicWindow";
 import ModalHook from "./ModalHook";
 import SnackbarHook from "./SnackbarHook";
+import OscilloscopeFrame from "./OscilloscopeFrame";
 
 interface AppContainerP {
     schematic: boolean
-    breadboard: boolean
+    breadboard: boolean,
+    oscilloscope: boolean
 }
 
 type AppContainerS = {
@@ -38,8 +40,9 @@ export default class AppContainer extends React.Component<AppContainerP, AppCont
                 <ModalHook getRef={this.getRef.bind(this)}/>
                 <SnackbarHook getRef={this.getSnackbarRef.bind(this)}/>
                 {/* <AppTabBar tabList={["Schematic", "BreadBoard"]} activeTab={"Schematic"} ></AppTabBar> */}
-                <SchematicWindow isActive={this.props.schematic}/>
+                {/* <SchematicWindow isActive={this.props.schematic}/> */}
                 <BreadBoardWindow isActive={this.props.breadboard} modalHook={this.state.modalHook} SnackbarHook={this.state.SnackbarHook}/>
+                <OscilloscopeFrame isActive={this.props.oscilloscope}/>
 
             </Box>
         )

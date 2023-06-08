@@ -11,7 +11,8 @@ import bodyParser from "body-parser"
 // import express, { Express } from "express"
 let app = express()
 let port = 3000
-let niusb = new NIUSBDRiver('/')
+let os = process.platform;
+let niusb = new NIUSBDRiver(os, '/')
 
 
 let prevPin = {digital: [[false,false,false,false,false,false,false,false],[false,false,false,false,false,false,false,false]], analogue: [[false, false]]}
@@ -24,15 +25,15 @@ app.use(bodyParser.urlencoded({extended: true}))
 //     res.sendFile
 // })
 
-app.get('/api/testWrite', (req, res) => {
-    niusb.writeToDevice({digital: [
-        [false, false, true, true, false,false,true, true],
-        [true,false,false,false,false,false,false,false]
-    ], analogue: [[false,false]]}, () => {
+// app.get('/api/testWrite', (req, res) => {
+//     niusb.writeToDevice({digital: [
+//         [false, false, true, true, false,false,true, true],
+//         [true,false,false,false,false,false,false,false]
+//     ], analogue: [[false,false]]}, () => {
 
-    })
-    res.send("Hello")
-})
+//     })
+//     res.send("Hello")
+// })
 
 app.get('/api/currentLab', (req, res, next) => {
     res.json({
@@ -85,6 +86,11 @@ app.get('/api/stop', (req, res, next) => {
     niusb.writeToDevice(prevPin)})
     res.send("stopped")
 })
+
+app.get('/api/oscilloscope', (req, res, next) => {
+    res.send(oscillo)
+})
+
 // Select Lab file
 
 let specificationDir = "./bin/dist/Specifications/"
@@ -92,6 +98,13 @@ let labFile = ""
 let rl = readline.createInterface({input: process.stdin, output: process.stdout})
 let labspec: LabSpec;
 let netlistmanager: NetListManger = new NetListManger();
+let oscillo: string = "";
+fs.readFile("./bin/dist/config.json", 'utf-8').then((data) => {
+    oscillo = JSON.parse(data)?.Oscilloscope;
+})
+
+
+
 function getLabFile() {
     rl.question("Please enter the file name of the lab file to be opened: ", (answer) => {
             readLabFile(answer)

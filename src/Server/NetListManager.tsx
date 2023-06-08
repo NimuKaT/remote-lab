@@ -98,6 +98,7 @@ export default class NetListManger {
         this.netLists.every((ref) => {
             let matched = netListSolver(ref.netList, target);
             if (matched === 0) {
+                console.log("Found Matching netlist")
                 console.log(ref.netList)
                 pinconfig = ref.pinConfig;
                 return 0
@@ -105,7 +106,7 @@ export default class NetListManger {
             return 1
 
         })
-        console.log(pinconfig)
+        // console.log(pinconfig)
         return pinconfig
     }
 

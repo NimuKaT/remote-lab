@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import React from "react";
-import { Layer, Stage, Text } from "react-konva";
+import { Layer, Line, Stage, Text } from "react-konva";
 import BBFComp from "./BreadBoard/BBFComp";
 import BBNodeObj from "./BreadBoard/BBNodeObj";
 import BBoard from "./BreadBoard/BBoard";
@@ -21,6 +21,7 @@ import BBSelect from "./BreadBoard/BBTool/BBSelect";
 import axios, { AxiosRequestConfig } from "axios";
 import SnackbarHook from "./SnackbarHook"
 import BBToolBar from "./BBToolBar";
+import BBDelete from "./BreadBoard/BBTool/BBDelete";
 
 
 interface BBWindowP {
@@ -36,7 +37,9 @@ interface BBWindowS {
     board: BBoard,
     hasModalRef: boolean,
     currTool?: BBTools
-    tools: Map<string, BBTools>
+    tools: Map<string, BBTools>,
+    toolName: string,
+    simState: string
 }
 
 export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindowS> {
@@ -52,13 +55,14 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
         let toolMap: Map<string, BBTools> = new Map<string, BBTools>();
         toolMap.set('PlaceStatic', tool);
         tool = new BBWireTool(board, this.stageRef);
-        board.deleteComponents();
         toolMap.set("Wire", tool);
         tool = new BBPlaceStretch(board, this.stageRef);
         toolMap.set("PlaceStretch", tool);
         board.cancelMovement()
         tool = new BBSelect(board, this.stageRef);
         toolMap.set("Select", tool);
+        tool = new BBDelete(board, this.stageRef);
+        toolMap.set("Delete", tool);
         
         this.state = {
             width: 50,
@@ -67,8 +71,11 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
             board: board,
             hasModalRef: false,
             currTool: undefined,
-            tools: toolMap
+            tools: toolMap,
+            toolName: "Pan",
+            simState: "Off"
         }
+        board.deleteComponents();
         window.addEventListener('resize', this.updateStage.bind(this), true);
         
     }
@@ -82,7 +89,7 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
             let parentElement = element.parentElement;
             if (parentElement) {
                 let w = parentElement.offsetWidth;
-                let h = window.innerHeight - 70
+                let h = window.innerHeight - 164
                 // let h = parentElement.offsetHeight;
                 this.setState({
                     width: w,
@@ -110,7 +117,7 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
             if (parentElement) {
                 let w = parentElement.offsetWidth -2;
                 // let h = parentElement.offsetHeight;
-                let h = window.innerHeight - 70
+                let h = window.innerHeight - 164
                 this.setState({
                     width: w,
                     height: h
@@ -130,36 +137,54 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
     }
     onScroll(evt: globalThis.WheelEvent) {
         evt.preventDefault()
-        if (this.state.scale > 0.01 && this.state.scale < 20) {
+        if (this.state.scale > 0.1 && this.state.scale < 20) {
             this.setState({scale: this.state.scale - evt.deltaY/1000})
         }
     }
 
-    keydown(evt: KeyboardEvent) {
-        console.log("BBKey: " + evt.key);
-        this.state.currTool?.onKeyDown(evt);
-        if (evt.key === 'i') {
-            this.state.currTool?.onInitialise();
-            let tool: BBTools| undefined = this.state.tools.get("PlaceStatic");
-            if (tool) {
+    setTool(toolName: string) {
+        let element = document.getElementById("BBContainer")
+        element?.focus();
+        if (toolName === 'Pan') {
+            this.state.currTool?.onToolChange(this.state.currTool)
+            this.setState({
+                currTool: undefined,
+                toolName: 'Pan'
+            })
+
+        } else if (toolName === 'Select') {
+            let tool: BBTools| undefined = this.state.tools.get("Select");
+            if (tool instanceof BBSelect) {
+                let select: BBSelect = tool;
                 this.state.currTool?.onToolChange(tool);
                 tool.onInitialise();
                 this.setState({
-                    currTool: tool
+                    currTool: tool,
+                    toolName: "Select"
                 })
             }
-        }
-        if (evt.key === 'w') {
+        } else if (toolName === 'Delete') {
+            let tool: BBTools| undefined = this.state.tools.get("Delete");
+            if (tool instanceof BBDelete) {
+                let select: BBDelete = tool;
+                this.state.currTool?.onToolChange(tool);
+                tool.onInitialise();
+                this.setState({
+                    currTool: tool,
+                    toolName: "Delete"
+                })
+            }
+        } else if (toolName === 'Wire') {
             let tool: BBTools| undefined = this.state.tools.get("Wire");
             if (tool) {
                 this.state.currTool?.onToolChange(tool);
                 tool.onInitialise();
                 this.setState({
-                    currTool: tool
+                    currTool: tool,
+                    toolName: 'Wire'
                 })
             }
-        }
-        if (evt.key === 'r') {
+        } else if (toolName === 'Resistor') {
             let tool: BBTools | undefined = this.state.tools.get("PlaceStretch");
             if (tool instanceof BBPlaceStretch) {
                 let placeStretch: BBPlaceStretch = tool;
@@ -167,11 +192,11 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
                 this.state.currTool?.onToolChange(tool);
                 tool.onInitialise();
                 this.setState({
-                    currTool: tool
+                    currTool: tool,
+                    toolName: "Resistor"
                 })
             }
-        }
-        if (evt.key === 'c') {
+        } else if (toolName === 'Capacitor') {
             let tool: BBTools | undefined = this.state.tools.get("PlaceStretch");
             if (tool instanceof BBPlaceStretch) {
                 let placeStretch: BBPlaceStretch = tool;
@@ -179,40 +204,97 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
                 this.state.currTool?.onToolChange(tool);
                 tool.onInitialise();
                 this.setState({
-                    currTool: tool
+                    currTool: tool,
+                    toolName: 'Capacitor'
                 })
             }
-        }
-        if (evt.key === 's') {
-            let tool: BBTools| undefined = this.state.tools.get("Select");
-            if (tool instanceof BBSelect) {
-                let select: BBSelect = tool;
+        } else if (toolName === 'IC') {
+            this.state.currTool?.onInitialise();
+            let tool: BBTools| undefined = this.state.tools.get("PlaceStatic");
+            if (tool) {
                 this.state.currTool?.onToolChange(tool);
                 tool.onInitialise();
                 this.setState({
-                    currTool: tool
+                    currTool: tool,
+                    toolName: 'IC'
                 })
             }
+        } else if (toolName === 'ZoomIn') {
+            if (this.state.scale < 20) {
+                this.setState({
+                    scale: this.state.scale + 0.1
+                })
+            }
+        } else if (toolName === 'ZoomOut') {
+            if (this.state.scale > 0.1) {
+                this.setState({
+                    scale: this.state.scale - 0.1
+                })
+            }
+        } else if (toolName === 'ResetZoom') {
+            this.setState({
+                scale: 1.6
+            })
+        } else if (toolName === 'Simulate') {
+            this.state.currTool?.onToolChange(this.state.currTool)
+            this.setState({
+                currTool: undefined,
+                toolName: "Pan",
+                simState: "Running"
+            })
+            this.state.board.getNetList();
+            this.submitNetList();
+        } else if (toolName === 'Stop') {
+            this.state.currTool?.onToolChange(this.state.currTool)
+            this.stopSim()
+        }
+    }
+
+    keydown(evt: KeyboardEvent) {
+        console.log("BBKey: " + evt.key);
+        this.state.currTool?.onKeyDown(evt);
+        if (evt.key === 'q') {
+            this.setTool("IC")
+        }
+        if (evt.key === 'w') {
+            this.setTool("Wire")
+        }
+        if (evt.key === 'r') {
+            this.setTool("Resistor")
+        }
+        if (evt.key === 'c') {
+            this.setTool("Capacitor")
+        }
+        if (evt.key === 's') {
+            this.setTool("Select")
+        }
+        if (evt.key === 'd') {
+            this.setTool("Delete")
         }
         if (evt.key === 'm') {
             this.setState({
-                currTool: undefined
+                currTool: undefined,
+                toolName: 'Pan'
             })
         }
         if (evt.key === 'Escape') {
-            if (this.state.currTool) {
-                this.state.currTool.onToolChange(this.state.currTool)
-            }
-            this.setState({
-                currTool: undefined
-            })
+            this.setTool('Pan')
         }
         if (evt.key === '`') {
             // this.state.board.getNetMap()
-            this.state.board.getNetList();
-            this.submitNetList();
+            this.setTool("Simulate")
         }
 
+    }
+    
+    stopSim() {
+        this.setState({
+                // currTool: undefined,
+                // toolName: "Pan",
+                simState: "Stopped"
+            })
+        let url = "/api/stop"
+        axios.get(url)
     }
 
     submitNetList() {
@@ -231,12 +313,17 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
                 this.props.SnackbarHook?.setSnackbar("Successfully implemented circuit on PCB!", "success", 6000);
             } else {
                 this.props.SnackbarHook?.setSnackbar("Failed to implement circuit on PCB! The circuit has been turned off.", 'error', 6000)
+                this.setState({
+                    simState: "Stopped"
+                })
             }
         });
     }
 
     render(): React.ReactNode {
-        return <div id="BBContainer"
+        return <>
+                {this.props.isActive?<BBToolBar activeTool={this.state.toolName} simState={this.state.simState} setTool={this.setTool.bind(this)}/>:""}
+        <div id="BBContainer"
             onChange={this.updateStage.bind(this)}
             onContextMenu={(e) => {e.preventDefault()}}
         >
@@ -244,7 +331,6 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
                 className="BreadBoardWindow"
                 sx={{height: "100%", flexGrow: 1}}
             >
-                <BBToolBar/>
                 <Stage
                 ref={this.stageRef}
                     width={this.state.width}
@@ -261,6 +347,18 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
                         <PowerSupply x={-50} y={-250}/>
                         <FunctionGenerator x={300} y={-250}/>
                         <Oscilloscope x={700} y={-300}/>
+
+                        <Line points={[42, -62, 318, -62]} stroke={"#cc3355"} strokeWidth={3}/>
+                        <Line points={[42, -58, 318, -58]} stroke={"#5533cc"} strokeWidth={3}/>
+
+                        <Line points={[378, -62, 654, -62]} stroke={"#cc3355"} strokeWidth={3}/>
+                        <Line points={[378, -58, 654, -58]} stroke={"#5533cc"} strokeWidth={3}/>
+
+                        <Line points={[378, 298, 654, 298]} stroke={"#5533cc"} strokeWidth={3}/>
+                        <Line points={[378, 302, 654, 302]} stroke={"#cc3355"} strokeWidth={3}/>
+                        <Line points={[42, 298, 318, 298]} stroke={"#5533cc"} strokeWidth={3}/>
+                        <Line points={[42, 302, 318, 302]} stroke={"#cc3355"} strokeWidth={3}/>
+
                         {this.state.board.getNodes().map((node, index) => {
                             return <BBNodeObj key={index} node={node}/>
                         })}
@@ -283,5 +381,6 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
                 </Stage>
             </Box>
         </div>
+        </>
     }
 }

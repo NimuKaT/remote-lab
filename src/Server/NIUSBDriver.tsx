@@ -1,7 +1,5 @@
 import {execFile} from 'node:child_process'
 
-// const executable = "bin\NIUSB\digitalWrite.exe"
-const executable = "./bin/testWrite/digitalWrite"
 
 export interface NIUSBParams {
     digital: Array<Array<boolean>>
@@ -15,9 +13,15 @@ export default class NIUSBDRiver {
     delimeter: string
     prevCmd?: NIUSBParams
 
-    constructor(delimeter: string) {
+    constructor(os: string, delimeter: string) {
         this.delimeter = delimeter;
-        this.executable = executable;
+        // this.executable = executable;
+        if (os === "win32") {
+            this.executable =  ".\\bin\\NIUSB\\digitalWrite.exe"
+        } else {
+            this.executable = "./bin/testWrite/digitalWrite"
+        }
+
     }
 
     writeToDevice(data: NIUSBParams, callback?: ()  => void) {
