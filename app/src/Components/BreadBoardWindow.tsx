@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import React from "react";
+import React, { DragEventHandler } from "react";
 import { Layer, Line, Stage, Text } from "react-konva";
 import BBFComp from "./BreadBoard/BBFComp";
 import BBNodeObj from "./BreadBoard/BBNodeObj";
@@ -22,6 +22,9 @@ import axios, { AxiosRequestConfig } from "axios";
 import SnackbarHook from "./SnackbarHook"
 import BBToolBar from "./BBToolBar";
 import BBDelete from "./BreadBoard/BBTool/BBDelete";
+import e from "express";
+import BBFileRep from "./BreadBoard/BBTypes/BBFileRep";
+import BBFileLoadModal from "./BreadBoard/Modal/BBFileLoadModal";
 
 
 interface BBWindowP {
@@ -247,6 +250,19 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
         } else if (toolName === 'Stop') {
             this.state.currTool?.onToolChange(this.state.currTool)
             this.stopSim()
+        } else if (toolName === 'Save') {
+            let comps = this.state.board.getComponents();
+            localStorage.setItem("BreadBoard", JSON.stringify(comps))
+        } else if (toolName === "Export") {
+            this.state.board.cleanObjects()
+            let element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + 
+                encodeURIComponent(JSON.stringify(this.state.board.getComponents())))
+            element.setAttribute('download', 'schematic.bbsc')
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click()
+            document.body.removeChild(element)
         }
     }
 
@@ -284,6 +300,13 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
             // this.state.board.getNetMap()
             this.setTool("Simulate")
         }
+        if (evt.key === 'S') {
+            this.setTool('Save')
+        }
+        if (evt.key === 'e') {
+            this.setTool('Export')
+        }
+        
 
     }
     
@@ -320,6 +343,36 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
         });
     }
 
+    handleFileDrag(event: React.DragEvent<HTMLFormElement>) { 
+        event.preventDefault();
+        event.stopPropagation();
+        // console.log("Has drag event");
+        
+    }
+
+    handleFileDrop(event: React.DragEvent<HTMLElement>) {
+        event.preventDefault()
+        event.stopPropagation()
+        // console.log("got drop");
+        
+        if (event.dataTransfer.files && event.dataTransfer.files[0]) {
+            event.dataTransfer.files[0].text().then((value: string) => {
+                try {
+                    let data = JSON.parse(value);
+                    let bb = data as BBFileRep;
+                    console.log(bb);
+                    this.props.modalHook?.openModal({}, 
+                        <BBFileLoadModal closeFunc={this.props.modalHook.getClose()} submitFunc={this.state.board.loadCompoents.bind(this.state.board, bb)}/>,
+                        () => {})
+                    
+                    // this.props.modalHook?.openModal()
+                } catch(err) {}
+            })
+            
+        }
+
+    }
+
     render(): React.ReactNode {
         return <>
                 {this.props.isActive?<BBToolBar activeTool={this.state.toolName} simState={this.state.simState} setTool={this.setTool.bind(this)}/>:""}
@@ -327,6 +380,9 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
             onChange={this.updateStage.bind(this)}
             onContextMenu={(e) => {e.preventDefault()}}
         >
+            <form id="breadboard-upload" onDragEnter={this.handleFileDrag.bind(this)} onDragLeave={(e) => {e.preventDefault()}} onDragOver={(e)=>{e.preventDefault()}} onDrop={this.handleFileDrop.bind(this)}>
+                <input type="file" id="input-breadboard-file" multiple={false} style={{display: 'none'}} onClick={(e) => {e.preventDefault()}}/>
+                <label htmlFor="input-breadboard-file" >
             <Box
                 className="BreadBoardWindow"
                 sx={{height: "100%", flexGrow: 1}}
@@ -380,6 +436,9 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
 
                 </Stage>
             </Box>
+            </label>
+            {/* <div style={{position: 'absolute', width: '100%', height: '100%'}}></div> */}
+            </form>
         </div>
         </>
     }

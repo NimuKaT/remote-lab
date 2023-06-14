@@ -160,7 +160,7 @@ export default class BBToolBar extends React.Component<BBToolBarP, BBToolBarS> {
                             <PlayArrow sx={{flexGrow: 1}}/>
                         }
                     </Button>
-                    <Typography>Simulate</Typography>
+                    <Typography>Run</Typography>
                     </Stack>
                 </Box>
                 </Stack>

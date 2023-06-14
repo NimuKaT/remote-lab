@@ -1,2 +1,1 @@
-env.bat
-npm install
+env.bat && npm install

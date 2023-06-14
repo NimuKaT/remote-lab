@@ -32,11 +32,12 @@ export default class ModalHook extends React.Component<ModalHookP, ModalHookS> {
         this.props.getRef(this)
     }
 
-    openModal(attr: ModalAttr, content: JSX.Element) {
+    openModal(attr: ModalAttr, content: JSX.Element, closeFunc: () => void) {
         this.setState({
             open: true,
             attr: attr,
-            content: content
+            content: content,
+            closeFunc: closeFunc
         })
     }
 

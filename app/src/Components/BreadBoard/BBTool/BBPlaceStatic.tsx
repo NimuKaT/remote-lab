@@ -8,8 +8,10 @@ export default class BBPlaceStatic extends BBTools {
 
     onInitialise(): void {
         this.board.deselect()
+        this.gotModalResponse = false
         this.board.openModal({hideBackdrop: true},
-            <BBICModal closeFunc={this.board.getModalClose()} setFunc={this.setValue.bind(this)}/>)
+            <BBICModal closeFunc={this.board.getModalClose()} setFunc={this.setValue.bind(this)}/>,
+            this.board.checkModalResponse.bind(this.board))
 
         
     }
@@ -21,6 +23,7 @@ export default class BBPlaceStatic extends BBTools {
         this.mouseRef = pos;
         pos = this.snap(pos);
         this.board.createNewStaticComp(this.compName, pos, this.pinCount);
+        this.gotModalResponse = true
     }
 
     onMouseDown(evt: KonvaEventObject<MouseEvent>): void {
@@ -66,7 +69,7 @@ export default class BBPlaceStatic extends BBTools {
     }
 
     onToolChange(newTool: BBTools): void {
-        
+        this.board.deleteComponents()
     }
 
     render(): JSX.Element {

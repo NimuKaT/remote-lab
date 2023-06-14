@@ -10,12 +10,15 @@ export default class BBPlaceStretch extends BBTools {
 
     onInitialise(): void {
         this.board.deselect()
+        this.gotModalResponse = false
         if (this.compType === 'res') {
-            this.board.openModal({hideBackdrop: true}, <BBResModal closeFunc={this.board.getModalClose()} setFunc={this.setValue.bind(this)}/>)
+            this.board.openModal({hideBackdrop: true}, <BBResModal closeFunc={this.board.getModalClose()} setFunc={this.setValue.bind(this)}/>,
+                this.board.checkModalResponse.bind(this.board))
         }
         else if (this.compType === 'cap') {
 
-            this.board.openModal({hideBackdrop: true}, <BBCapModal closeFunc={this.board.getModalClose()} setFunc={this.setValue.bind(this)}/>)
+            this.board.openModal({hideBackdrop: true}, <BBCapModal closeFunc={this.board.getModalClose()} setFunc={this.setValue.bind(this)}/>,
+                this.board.checkModalResponse.bind(this.board))
         }
         this.firstNode = true
     }
@@ -27,6 +30,7 @@ export default class BBPlaceStretch extends BBTools {
         console.log(pos);
         
         this.mouseRef = pos;
+        this.gotModalResponse = true
         this.board.createNewStretchComp(this.compType, pos, this.value)
     }
 

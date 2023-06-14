@@ -233,4 +233,13 @@ export default class BBStretchComp {
             return [n1, n2, mul, tol]    
         }
     }
+
+    getRep(){
+        return {
+            "type": this.type,
+            "value": this.value,
+            "nodes": [this.nodes[0].getPos(), this.nodes[1].getPos()],
+            "mainBodyPos": this.mainBodyPos
+        }
+    }
 }

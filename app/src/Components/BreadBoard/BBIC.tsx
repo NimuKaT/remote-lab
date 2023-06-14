@@ -115,4 +115,13 @@ export default class BBIC {
         })
         return {prefix: "U", nodes: nodes, value: this.modelName}
     }
+
+    getRep() {
+        return {
+            "modelName": this.modelName,
+            "orientation": this.orientation,
+            "localPos": this.localPos,
+            "pinCount": this.pinCount
+        }
+    }
 }

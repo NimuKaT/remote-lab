@@ -1,1 +1,1 @@
-set PATH=%PATH%;%cd\..\node;
+set PATH=%PATH%;%cd%\..\node;

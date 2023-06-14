@@ -12,7 +12,8 @@ export default class BBWireTool extends BBTools {
         this.isFirstnode = true;
         this.gotModalResponse = false;
         this.board.openModal({hideBackdrop: true},
-            <BBWireModal closeFunc={this.board.getModalClose()} setFunc={this.setColor.bind(this)}/>)
+            <BBWireModal closeFunc={this.board.getModalClose()} setFunc={this.setColor.bind(this)}/>,
+            this.board.checkModalResponse.bind(this.board))
     }
 
     setColor(color: string) {

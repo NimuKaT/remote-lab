@@ -106,4 +106,12 @@ export default class BBWire {
     getRef(ref: BBWireObj) {
         this.ref = ref;
     }
+
+    getRep() {
+        return {
+            "nodePos": this.nodePos,
+            "anchors": this.anchors,
+            "color": this.color
+        }
+    }
 }

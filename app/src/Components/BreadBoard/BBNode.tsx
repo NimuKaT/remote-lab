@@ -32,6 +32,10 @@ export default class BBNode {
     getLocalY() {
         return this.localPos.y;
     }
+    
+    getPos() {
+        return this.localPos;
+    }
 
     getShiftX() {
         return this.localPos.x + this.shiftVec.x

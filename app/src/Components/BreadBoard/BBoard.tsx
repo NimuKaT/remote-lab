@@ -6,6 +6,10 @@ import BBWire from "./BBWire";
 import BBStretchComp from "./BBStretchComp";
 import ModalHook from "../ModalHook";
 import { ModalAttr } from "../ModalAttr";
+import BBICRep from "./BBTypes/BBICRep";
+import BBWireRep from "./BBTypes/BBWireRep";
+import BBcompRep from "./BBTypes/BBcompRep";
+import BBFileRep from "./BBTypes/BBFileRep";
 
 interface BBlabels {
     text: string,
@@ -103,6 +107,21 @@ export default class BBoard {
         // this.nodes.push(new BBNode({x:-115, y: -175}, "Mch1-", 'black', 1))
         // this.nodes.push(new BBNode({x:-115, y: -125}, "Mch1+", 'red', 1))
 
+
+
+        // Load File from localStorage
+
+        let localFile = localStorage.getItem('BreadBoard');
+        if (localFile !== null) {
+            let localObject = JSON.parse(localFile);
+            // if (localObject instanceof BBFileRep) {
+            try {
+                let file = localObject as BBFileRep
+                this.loadCompoents(file)
+            } catch (err) {}
+            // }
+        }
+
     }
 
     foreceUpdate() {
@@ -113,13 +132,14 @@ export default class BBoard {
         this.modalRef = ref;
     }
 
-    openModal(attr: ModalAttr, content: JSX.Element) {
-        this.modalRef?.openModal(attr, content)
+    openModal(attr: ModalAttr, content: JSX.Element, closeFunc: ()=>void) {
+        this.modalRef?.openModal(attr, content, closeFunc)
     }
 
     getModalClose() {
         if (this.modalRef) {
-            return (() => {if (this.modalRef) {this.modalRef.getClose()()};  this.checkModalResponse()}).bind(this)
+            return (() => {if (this.modalRef) {this.modalRef.getClose()()};  this.checkModalResponse(); console.log('should check modal');
+            }).bind(this)
         }
         else {
             return () => {}
@@ -131,9 +151,9 @@ export default class BBoard {
         console.log(this.ref?.state.toolName);
         
         
-        // if (this.ref?.state.currTool?.gotModalResponse === false) {
-        //     this.ref?.setTool("Pan")
-        // }
+        if (this.ref?.state.currTool?.gotModalResponse === false) {
+            this.ref?.setTool("Pan")
+        }
     }
 
     createNewStaticComp(modelName: string, pos: Vector2d, pin: number, isPlaced?: boolean) {
@@ -199,6 +219,9 @@ export default class BBoard {
     }
 
     deselect() {
+        this.selectedIC.forEach((ic) => {
+            // ic.desele
+        })
         this.selectedIC = []
         this.selectedStretch = []
         this.selectedWire = []
@@ -499,5 +522,95 @@ export default class BBoard {
 
         console.log(netlist)
         return netlist
+    }
+
+    cleanObjects() {
+        let cleanICs: Array<BBIC> = []
+        let cleanWire: Array<BBWire> = []
+        let cleanStretch: Array<BBStretchComp> = []
+
+        this.ic.forEach((ic) => {
+            if (!ic.isDeleted()) {
+                cleanICs.push(ic);
+            }
+        })
+        this.wires.forEach((wire) => {
+            if (!wire.deleted) {
+                cleanWire.push(wire)
+            }
+        })
+        this.stretchComp.forEach((comp) => {
+            if (!comp.isDeleted) {
+                cleanStretch.push(comp)
+            }
+        })
+        this.ic = cleanICs;
+        this.wires = cleanWire;
+        this.stretchComp = cleanStretch;
+    }
+
+    getComponents() {
+        console.log(this.ic)
+        // this.cleanObjects();
+        let icRep: Array<BBICRep> = []
+        let wireRep: Array<BBWireRep> = []
+        let compRep: Array<BBcompRep> = []
+
+        this.ic.forEach((ic) => {
+            if (!ic.isDeleted()) {
+                icRep.push(ic.getRep())
+            }
+        })
+        this.wires.forEach((wire) => {
+            if (!wire.deleted) {
+                wireRep.push(wire.getRep())
+            }
+        })
+        this.stretchComp.forEach((comp) => {
+            if (!comp.isDeleted) {
+                compRep.push(comp.getRep())
+            }
+        })
+
+        return {
+            'ic': icRep,
+            'wire': wireRep,
+            'comp': compRep
+        }
+    }
+
+    loadCompoents(data: BBFileRep) {
+        this.wires.forEach((wire) => {
+            wire.delete()
+        })
+        this.ic.forEach((ic) => {
+            ic.delete()
+        })
+        this.stretchComp.forEach((comp) => {
+            comp.delete()
+        })
+        this.wires = [];
+        this.ic = [];
+        this.stretchComp = [];
+        data.wire.forEach((wire) => {
+            let w: BBWire = new BBWire()
+            w.changeColor(wire.color)
+            wire.nodePos.forEach((n: Vector2d, i: number) => {
+                w.placeNode(n, i);
+            })
+            this.wires.push(w)
+        })
+        data.ic.forEach((ic) => {
+            let chip: BBIC = new BBIC(ic.modelName, ic.localPos, ic.pinCount);
+            this.ic.push(chip)
+        })
+        data.comp.forEach((comp) => {
+            let item: BBStretchComp = new BBStretchComp(comp.type, comp.mainBodyPos, comp.value)
+            comp.nodes.forEach((n: Vector2d, i: number) => {
+                item.placeNode(i, n)
+            })
+            this.stretchComp.push(item)
+        })
+        this.foreceUpdate()
     }
 }
