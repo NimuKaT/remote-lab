@@ -306,42 +306,44 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
 
     keydown(evt: KeyboardEvent) {
         console.log("BBKey: " + evt.key);
-        this.state.currTool?.onKeyDown(evt);
-        if (evt.key === 'q') {
+        if (this.state.currTool && !this.state.currTool?.onKeyDown(evt)) {
+
+        }
+        else if (evt.key === 'q') {
             this.setTool("IC")
         }
-        if (evt.key === 'w') {
+        else if (evt.key === 'w') {
             this.setTool("Wire")
         }
-        if (evt.key === 'r') {
+        else if (evt.key === 'r') {
             this.setTool("Resistor")
         }
-        if (evt.key === 'c') {
+        else if (evt.key === 'c') {
             this.setTool("Capacitor")
         }
-        if (evt.key === 's') {
+        else if (evt.key === 's') {
             this.setTool("Select")
         }
-        if (evt.key === 'd') {
+        else if (evt.key === 'd') {
             this.setTool("Delete")
         }
-        if (evt.key === 'm') {
+        else if (evt.key === 'm') {
             this.setState({
                 currTool: undefined,
                 toolName: 'Pan'
             })
         }
-        if (evt.key === 'Escape') {
+        else if (evt.key === 'Escape') {
             this.setTool('Pan')
         }
-        if (evt.key === '`') {
+        else if (evt.key === '`') {
             // this.state.board.getNetMap()
             this.setTool("Simulate")
         }
-        if (evt.key === 'S') {
+        else if (evt.key === 'S') {
             this.setTool('Save')
         }
-        if (evt.key === 'e') {
+        else if (evt.key === 'e') {
             this.setTool('Export')
         }
         
