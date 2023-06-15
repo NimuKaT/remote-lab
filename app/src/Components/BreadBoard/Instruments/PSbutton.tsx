@@ -4,7 +4,8 @@ import { Group, Rect } from "react-konva";
 
 type PSbuttonP = {
     x: number,
-    y: number
+    y: number,
+    callback?: (state: boolean) => any
 }
 type PSbuttonS = {
     buttonDown: boolean,
@@ -20,6 +21,9 @@ export default class PSbutton extends React.Component<PSbuttonP, PSbuttonS> {
     }
 
     onClick(evt: KonvaEventObject<MouseEvent>) {
+        if (this.props.callback) {
+            this.props.callback(!this.state.buttonDown)
+        }
         this.setState({
             buttonDown: !this.state.buttonDown
         })

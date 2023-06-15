@@ -11,7 +11,7 @@ type PSknobP = {
     y: number,
     setNum: (val: number) => void,
     radius?: number
-    strokeWidth?: number
+    strokeWidth?: number,
 }
 
 type PSknobS = {
@@ -33,7 +33,7 @@ export default class PSknob extends React.Component<PSknobP, PSknobS> {
             hasMoved: false,
             refPos: {x:0,y:0}
         }
-        let ele = document.getElementById("BBContainer")
+        let ele = document.getElementById("BBWindow")
         if (ele) {
             ele.addEventListener('wheel', this.onScroll.bind(this))
         }
@@ -44,7 +44,7 @@ export default class PSknob extends React.Component<PSknobP, PSknobS> {
         this.setState({isMouseDown: true, hasMoved: false, refPos: evt.target.getRelativePointerPosition()})
         console.log(evt.target.getRelativePointerPosition())
     }
-
+    
     onMouseMove(evt: KonvaEventObject<MouseEvent>) {
         evt.cancelBubble = true
         if (this.state.isMouseDown) {

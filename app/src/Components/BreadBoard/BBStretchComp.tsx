@@ -17,6 +17,7 @@ export default class BBStretchComp {
     type: string
     resLines: Array<LineCMD> = []
     relRect: {lx:number,ly:number,hx:number,hy:number} = {lx:0,ly:0,hx:0,hy:0}
+    isSelected: boolean = false
 
     constructor(name: string, pos: Vector2d, value: string) {
         this.type = name
@@ -165,7 +166,13 @@ export default class BBStretchComp {
             }
         }
 
+        this.isSelected = flag
+
         return flag
+    }
+
+    deselect() {
+        this.isSelected = false
     }
 
     place() {
@@ -225,7 +232,7 @@ export default class BBStretchComp {
             if (this.value.length >= 3 && this.value.charAt(2) === '0') {
                 mul = mul+1;
             }
-            console.log("Res n1: " + n1 + " n2: " + n2 + " mul: " + mul);
+            // console.log("Res n1: " + n1 + " n2: " + n2 + " mul: " + mul);
             this.resLines.push({points:[-10,-10,10,-10], strokeWidth:2, color:ResColorMap[n1]})
             this.resLines.push({points:[-10,-5,10,-5], strokeWidth:2, color:ResColorMap[n2]})
             this.resLines.push({points:[-10,0,10,0], strokeWidth:2, color:ResColorMap[mul]})

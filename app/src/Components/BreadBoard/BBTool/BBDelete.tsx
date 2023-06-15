@@ -17,10 +17,26 @@ export default class BBDelete extends BBTools {
     }
 
     onMouseMove(evt: KonvaEventObject<MouseEvent>): void {
+        this.board.deselect()
         if (this.isSelecting) {
             let pos = this.getPointerPos();
             if (Math.sqrt(Math.pow(this.mouseRef.x - pos.x, 2) + Math.pow(this.mouseRef.y - pos.y,2)) >= this.moveThreshold) {
                 this.hasMoved = true
+            }
+            if (this.hasMoved) {
+
+        let pos = this.getPointerPos();
+        let x = this.mouseRef.x;
+        let y = this.mouseRef.y;
+        let w = Math.abs(x - pos.x)
+        let h = Math.abs(y - pos.y)
+        if (x > pos.x) {
+            x = pos.x
+        }
+        if (y > pos.y) {
+            y = pos.y
+        }
+        this.board.select(x, y, w, h);
             }
             this.board.foreceUpdate();
             
@@ -52,7 +68,8 @@ export default class BBDelete extends BBTools {
     }
 
     onToolChange(newTool: BBTools): void {
-        
+        this.isSelecting = false;
+        this.hasMoved = false;
     }
 
     render(): JSX.Element {

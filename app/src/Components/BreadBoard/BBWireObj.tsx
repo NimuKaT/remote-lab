@@ -17,8 +17,19 @@ export default class BBWireObj extends React.Component<BBWireObjP, BBWireObjS> {
     render(): React.ReactNode {
         let points = this.props.wire.getPoints()
         return <Group> 
+
             {this.props.wire.deleted? '': 
             <>
+            {this.props.wire.isSelected? <><Line
+                x={0} y={0}
+                points={this.props.wire.getPoints()}
+                stroke={"#3324a5"}
+                strokeWidth={14}
+                opacity={1}/>
+            <Circle x={points[0]} y={points[1]} radius={6} fill="#3324a5"/>
+            <Circle x={points[2]} y={points[3]} radius={6} fill="#3324a5"/>
+            </>
+            :''}
             <Circle x={points[0]} y={points[1]} radius={4} fill="grey"/>
             <Circle x={points[2]} y={points[3]} radius={4} fill="grey"/>
             <Line

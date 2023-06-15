@@ -6,6 +6,7 @@ import fs from "fs/promises"
 import LabSpec from "../labSpec"
 import NetListManger from "./NetListManager"
 import bodyParser from "body-parser"
+import { channel } from "node:diagnostics_channel"
 
 // const express = require('express')
 // import express, { Express } from "express"
@@ -46,9 +47,9 @@ app.get('/api/netlist', (req, res, next) => {
 })
 
 app.post('/api/runNetlist', (req, res, next) => {
-    console.log("Received netlist")
+    // console.log("Received netlist")
     let netlist = req.body as Array<string>
-    console.log(netlist);
+    // console.log(netlist);
     let pinconfig = netlistmanager.compareNetlist(netlist);
     
     if (pinconfig.digital.length > 0) {
@@ -116,16 +117,155 @@ function readLabFile(fileName: string) {
             labFile = fileName
             labspec = JSON.parse(data) as LabSpec;
             netlistmanager.loadLabSpec(labspec)
-            rl.close()
+            readCommand("")
+            // rl.close()
     }).catch((err) => {
         console.log(err);
         getLabFile()
     })
 }
+let pinNum = 0;
+let isOn = true;
+function readCommand(answer: string) {
+    let values: Array<string> = answer.split(" ")
+    let flag = false;
+    if (values.length === 1) {
+        if (values[0].toLocaleLowerCase() === 'list') {
+            console.log(netlistmanager.netLists)
+        }
+        if (values[0] === '?') {
+            rl.write("Command List:\n\tlist \t - lists the current valid netlists\n\t change (switch number) (switch state) t - preparse to change the net list for the specified switch and swicth state")
+        }
+    }
+    if (values.length === 3 ) {
+        if (values[0].toLocaleLowerCase() === 'change') {
+            if (parseInt(values[1]) >= 1 && parseInt(values[1]) <= 5) {
+                pinNum = parseInt(values[1]);
+                // console.log("got pin: %d", pinNum);
+                
+                if (values[2].toLocaleLowerCase() === 'on' || values[2].toLocaleLowerCase() === 'off') {
+                    if (values[2].toLocaleLowerCase() === 'on') {
+                        isOn = true
+                    } else {
+                        isOn = false;
+                    }
+                    flag = true;
+                    newNet = []
+                    netlistmanager.getSwitches()?.digital.forEach((sw) => {
+                        if (sw.pinNum === pinNum) {
+                            if (isOn) {
+                                sw.on.forEach((net) => {
+                                    newNet.push(net.slice())
+                                })
+                            } else {
+                                sw.off.forEach((net) => {
+                                    newNet.push((net.slice()))
+                                })
+                            }
+                        }
+                    })
+                    chagneNetList(" ");
+                }
+            }
+        }
+    }
+    if (!flag) {
+
+    rl.write("Current setting for the PCB is:\n")
+    // rl.write(JSON.stringify(netlistmanager.getSwitches()))
+    netlistmanager.getSwitches()?.digital.forEach((sw) => {
+        rl.write("\tpin number: " + sw.pinNum + "\n\t\ton: \n")
+        sw.on.forEach((net) => {
+            rl.write("\t\t\t" + net + "\n")
+        })
+        rl.write("\t\toff: \n")
+        sw.off.forEach((net) => {
+            rl.write("\t\t\t" + net + "\n")
+        })
+    })
+    rl.question("Enter a command: ", readCommand);
+    }
+}
+
+let newNet: Array<string> = []
+
+function chagneNetList(answer: string) {
+    let flag = false
+    if (answer === '') {
+        readCommand('')
+    }
+    else {
+        let val = answer.split(" ")
+        let cmd =val[0].toLocaleLowerCase() 
+        if (cmd === "add") {
+            val.splice(0,1);
+            newNet.push(val.join(" "));
+        } else if (cmd === 'remove') {
+            let i = parseInt(val[1]);
+            if (0 <= i && i < newNet.length) {
+                newNet.splice(i,1);
+            }
+        } else if (cmd === 'confirm') {
+            flag = true;
+            netlistmanager.getSwitches()?.digital.every((sw) => {
+                if (sw.pinNum === pinNum) {
+                    if (isOn) {
+                        sw.on = newNet;
+                    } else {
+                        sw.off = newNet;
+                    }
+                    newNet = []
+                    return false
+                }
+                return true
+            })
+            netlistmanager.genNetlists()
+            readCommand('')
+        } else if (cmd === 'cancel') {
+            flag = true
+            readCommand('')
+        } else if (cmd === "?" || cmd === "help" || cmd === 'h') {
+            rl.write("Command List:\n" +
+            "\tadd (net list) \t - adds net list to the proposed changes\n" +
+            "\tremove (net list index) \t - removes the netlist at the specified index from the proposed new netlist\n" +
+            "\tconfirm \t - commits the changes to the netlist to the active netlist resolver\n" + 
+            "\tcancel \t - cancels the changes to the netlists\n"
+            )
+        }
+
+
+
+        if (!flag) {
+        rl.write("Currently changing switch " + pinNum + " for state " + (isOn? "on": "off") + "\n")
+        rl.write("Current Net:\n")
+        netlistmanager.getSwitches()?.digital.every((sw) => {
+            if (sw.pinNum === pinNum) {
+                if (isOn) {
+                    sw.on.forEach((net) => {
+                        rl.write("\t" + net + "\n")
+                    })
+                } else {
+                    sw.off.forEach((net) => {
+                        rl.write("\t" + net + "\n")
+                    })
+                }
+                return false
+            }
+            return true
+        })
+        rl.write("New Net:\n")
+        newNet.forEach((net) => {
+            rl.write("\t" + net + "\n")
+        })
+        rl.question('Enter changes: ', chagneNetList)
+        }
+
+    }
+}
 
 app.listen(port, () => {
     console.log('Server listening to ' + port)
+readLabFile("lab01.json")
 })
 
 // getLabFile()
-readLabFile("lab01.json")

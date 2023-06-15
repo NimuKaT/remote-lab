@@ -138,7 +138,7 @@ export default class BBoard {
 
     getModalClose() {
         if (this.modalRef) {
-            return (() => {if (this.modalRef) {this.modalRef.getClose()()};  this.checkModalResponse(); console.log('should check modal');
+            return (() => {if (this.modalRef) {this.modalRef.getClose()()};  this.checkModalResponse();
             }).bind(this)
         }
         else {
@@ -147,8 +147,8 @@ export default class BBoard {
     }
 
     checkModalResponse() {
-        console.log("Checking modal response");
-        console.log(this.ref?.state.toolName);
+        // console.log("Checking modal response");
+        // console.log(this.ref?.state.toolName);
         
         
         if (this.ref?.state.currTool?.gotModalResponse === false) {
@@ -197,7 +197,7 @@ export default class BBoard {
         this.selectedIC = []
         this.ic.forEach((comp) => {
             if (!comp.isDeleted() && comp.select(x, y, w, h)) {
-                console.log(comp);
+                // console.log(comp);
                 this.selectedIC.push(comp)
             }
         })
@@ -205,14 +205,14 @@ export default class BBoard {
         this.selectedWire = []
         this.wires.forEach((wire) => {
             if (!wire.deleted && wire.select(x, y, w, h)) {
-                console.log(wire);
+                // console.log(wire);
                 this.selectedWire.push(wire)
             }
         })
 
         this.stretchComp.forEach((comp) => {
             if (!comp.isDeleted && comp.select(x,y,w,h,)) {
-                console.log(comp)
+                // console.log(comp)
                 this.selectedStretch.push(comp)
             }
         })
@@ -220,7 +220,13 @@ export default class BBoard {
 
     deselect() {
         this.selectedIC.forEach((ic) => {
-            // ic.desele
+            ic.deselect()
+        })
+        this.selectedStretch.forEach((comp) => {
+            comp.deselect()
+        })
+        this.selectedWire.forEach((wire) => {
+            wire.deselect()
         })
         this.selectedIC = []
         this.selectedStretch = []
@@ -234,6 +240,7 @@ export default class BBoard {
         this.selectedStretch.forEach((comp) => {
             comp.shift(shift)
         })
+        this.saveBB()
     }
 
     placeComponents() {
@@ -246,6 +253,7 @@ export default class BBoard {
         this.selectedIC = [];
         this.selectedWire = [];
         this.selectedStretch = []
+        this.saveBB()
         this.ref.setTool("Stop")
     }
 
@@ -277,10 +285,11 @@ export default class BBoard {
         })
         this.selectedWire = []
         this.ref.stopSim();
+        this.saveBB()
         this.foreceUpdate()
     }
 
-    onBBNode(pos: Vector2d): Vector2d | undefined {
+    onBBNode(pos: Vector2d, highlight?: boolean): Vector2d | undefined {
     // onBBNode(pos: Vector2d)  {
         let flag: boolean = false;
         let retPos: Vector2d | undefined = undefined
@@ -289,6 +298,9 @@ export default class BBoard {
             if (n) {
                 flag = true;
                 retPos = {x: node.getLocalX(), y:node.getLocalY()}
+                if (highlight) {
+                    // Highlight nodee
+                }
                 // return n;
             }
         })
@@ -317,6 +329,7 @@ export default class BBoard {
     }
 
     getNetMap() {
+        this.saveBB()
         // Key is the original netName, value is new netName
         let netMap = new Map<string, string>();
         let revMap = new Map<string, Array<string>>();
@@ -550,7 +563,7 @@ export default class BBoard {
     }
 
     getComponents() {
-        console.log(this.ic)
+        // console.log(this.ic)
         // this.cleanObjects();
         let icRep: Array<BBICRep> = []
         let wireRep: Array<BBWireRep> = []
@@ -612,5 +625,10 @@ export default class BBoard {
             this.stretchComp.push(item)
         })
         this.foreceUpdate()
+    }
+
+    saveBB() {
+        let comp = this.getComponents();
+        localStorage.setItem("BreadBoard", JSON.stringify(comp))
     }
 }

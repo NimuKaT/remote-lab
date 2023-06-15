@@ -27,7 +27,7 @@ export default class BBPlaceStretch extends BBTools {
         this.value = val;
         let pos = this.getPointerPos()        
         pos = this.snap(pos)
-        console.log(pos);
+        // console.log(pos);
         
         this.mouseRef = pos;
         this.gotModalResponse = true

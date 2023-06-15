@@ -42,6 +42,8 @@ export default class BBStretchObj extends React.Component<BBStretchObjP, BBStret
         let anchors = this.props.comp.getAnchors()
         let refPos = this.props.comp.getRefPos()
         let symbol = this.props.comp.getMainBody()
+        let color = this.props.comp.isSelected? '#3324a5' : 'black'
+        let strokeWidth = this.props.comp.isSelected? 2 : 1
         
         return <Group
             x={0}
@@ -57,8 +59,8 @@ export default class BBStretchObj extends React.Component<BBStretchObjP, BBStret
                     refPos.x + this.rotateX(anchors[0], rot),
                     refPos.y - this.rotateY(anchors[0], rot)
                 ]}
-                stroke={'black'}
-                strokeWidth={1}
+                stroke={color}
+                strokeWidth={strokeWidth}
 
             />
             <Line
@@ -70,31 +72,31 @@ export default class BBStretchObj extends React.Component<BBStretchObjP, BBStret
                     refPos.x + this.rotateX(anchors[1], rot),
                     refPos.y - this.rotateY(anchors[1], rot)
                 ]}
-                stroke={'black'}
-                strokeWidth={1}
+                stroke={color}
+                strokeWidth={strokeWidth}
             />
             {symbol.lines.map((line) => {
                 if (line.strokeWidth) {
                     if (line.color) {
-                        return this.rotateLine(refPos, line.points, rot, line.strokeWidth, line.color)
+                        return this.rotateLine(refPos, line.points, rot, line.strokeWidth, line.color )
                     }
-                    return this.rotateLine(refPos, line.points, rot, line.strokeWidth)
+                    return this.rotateLine(refPos, line.points, rot, line.strokeWidth, color)
                 } else {
-                    return this.rotateLine(refPos, line.points, rot)
+                    return this.rotateLine(refPos, line.points, rot, strokeWidth, color)
                 }
             })}
             {symbol.rects.map((rect) => {
                 return <>
-                    {this.rotateLine(refPos, [rect.x, rect.y, rect.x+rect.w,rect.y],rot)}
-                    {this.rotateLine(refPos, [rect.x, rect.y, rect.x,rect.y+rect.h],rot)}
-                    {this.rotateLine(refPos, [rect.x+rect.w, rect.y, rect.x+rect.w,rect.y+rect.h],rot)}
-                    {this.rotateLine(refPos, [rect.x, rect.y+rect.h, rect.x+rect.w,rect.y+rect.h],rot)}
+                    {this.rotateLine(refPos, [rect.x, rect.y, rect.x+rect.w,rect.y],rot, strokeWidth, color)}
+                    {this.rotateLine(refPos, [rect.x, rect.y, rect.x,rect.y+rect.h],rot, strokeWidth, color)}
+                    {this.rotateLine(refPos, [rect.x+rect.w, rect.y, rect.x+rect.w,rect.y+rect.h],rot, strokeWidth, color)}
+                    {this.rotateLine(refPos, [rect.x, rect.y+rect.h, rect.x+rect.w,rect.y+rect.h],rot, strokeWidth, color)}
                 </>
             })}
             {this.props.comp.resLines.map((line) => {
                 return this.rotateLine(refPos, line.points, rot, line.strokeWidth, line.color)
             })}
-            {this.props.comp.type === 'cap' ? <SpiceText x={refPos.x+15} y={refPos.y} orientation="R0" justification="Left" text={this.props.comp.value} fontSize={14}/>: ""}
+            {this.props.comp.type === 'cap' ? <SpiceText x={refPos.x+15} y={refPos.y} orientation="R0" justification="Left" text={this.props.comp.value} fontSize={14} color={color}/>: ""}
             {nodes.map((node) => {
                 return <BBNodeObj node={node} valid={false} shift={true}/>
             })}

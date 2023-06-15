@@ -43,7 +43,7 @@ export function netListSolver(refNetList: Array<string>, targetNetList: Array<st
 
     // STRICT MODE
     if (targetComps.length !== refComps.length) {
-        console.log("Miss match in the number of components connected in the circuit.")
+        // console.log("Miss match in the number of components connected in the circuit.")
         return -5
     }
 
@@ -65,9 +65,9 @@ export function netListSolver(refNetList: Array<string>, targetNetList: Array<st
     })
 
     if (matchingIndexes.length === refComps.length) {
-        console.log('has enough matches')
+        // console.log('has enough matches')
     } else {
-        console.log('not enough matches')
+        // console.log('not enough matches')
     }
     // console.log(matchingIndexes)
     // console.log(refComps)

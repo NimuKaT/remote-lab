@@ -13,7 +13,7 @@ import BBWireTool from "./BreadBoard/BBTool/BBWireTool";
 import BBPlaceStretch from "./BreadBoard/BBTool/BBPlaceStretch";
 import BBStretchObj from "./BreadBoard/BBStretchObj";
 import ModalHook from "./ModalHook";
-import PowerSupply from "./BreadBoard/Instruments/PowerSupply";
+import PowerSupply, { PowerSupplyS } from "./BreadBoard/Instruments/PowerSupply";
 import FunctionGenerator from "./BreadBoard/Instruments/FunctionGenarator";
 import Oscilloscope from "./BreadBoard/Instruments/Oscilloscope";
 import MultiMeter from "./BreadBoard/Instruments/MultiMeter";
@@ -22,7 +22,6 @@ import axios, { AxiosRequestConfig } from "axios";
 import SnackbarHook from "./SnackbarHook"
 import BBToolBar from "./BBToolBar";
 import BBDelete from "./BreadBoard/BBTool/BBDelete";
-import e from "express";
 import BBFileRep from "./BreadBoard/BBTypes/BBFileRep";
 import BBFileLoadModal from "./BreadBoard/Modal/BBFileLoadModal";
 
@@ -48,6 +47,17 @@ interface BBWindowS {
 export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindowS> {
     stageRef: React.RefObject<stage> = React.createRef<stage>();
     tools: Map<string, BBTools> = new Map<string, BBTools>();
+    psuState: PowerSupplyS = {
+        ch1A: 0,
+        ch1V: 0,
+        ch2A: 0,
+        ch2V: 0,
+        mode1: false,
+        mode2: false,
+        pwr: false
+    }
+
+
     constructor(P: BBWindowP, S: BBWindowS) {
         super(P, S);
         let board = new BBoard(2, 30, 5, this);
@@ -87,8 +97,6 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
         let element = document.getElementById("BBContainer");
         if (element) {
             element.tabIndex = 1;
-            element.addEventListener('keydown', this.keydown.bind(this))
-            element.addEventListener('wheel', this.onScroll.bind(this))
             let parentElement = element.parentElement;
             if (parentElement) {
                 let w = parentElement.offsetWidth;
@@ -99,6 +107,11 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
                     height: h
                 })
             }
+        }
+        // element = document.getElementById("BBWindow")
+        if (element) {
+            element.addEventListener('keydown', this.keydown.bind(this))
+            element.addEventListener('wheel', this.onScroll.bind(this))
         }
     }
 
@@ -245,8 +258,31 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
                 toolName: "Pan",
                 simState: "Running"
             })
-            this.state.board.getNetList();
-            this.submitNetList();
+            /// HARD CODE
+            if (this.psuState.ch1A > 0.05 && this.psuState.ch2A > 0.05) {
+                if (14.5 <= this.psuState.ch1V && this.psuState.ch1V <= 15.5) {
+                    if (this.psuState.mode1 && !this.psuState.mode2 && this.psuState.pwr) {
+
+                        this.state.board.getNetList();
+                        this.submitNetList();
+                    }
+                    else {
+                        this.props.SnackbarHook?.setSnackbar("Failed to implement circuit on PCB! The circuit has been turned off.\nMake sure you configure the power supply correctly.", 'error', 6000)
+                        this.stopSim()
+                    }
+                }
+                else {
+                    this.props.SnackbarHook?.setSnackbar("Failed to implement circuit on PCB! The circuit has been turned off.\nMake sure you configure the power supply correctly.", 'error', 6000)
+                    this.stopSim()
+                }
+
+            }
+            else {
+                this.props.SnackbarHook?.setSnackbar("Failed to implement circuit on PCB! The circuit has been turned off.\nMake sure you configure the power supply correctly.", 'error', 6000)
+                this.stopSim()
+            }
+
+
         } else if (toolName === 'Stop') {
             this.state.currTool?.onToolChange(this.state.currTool)
             this.stopSim()
@@ -255,6 +291,8 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
             localStorage.setItem("BreadBoard", JSON.stringify(comps))
         } else if (toolName === "Export") {
             this.state.board.cleanObjects()
+            let comps = this.state.board.getComponents();
+            localStorage.setItem("BreadBoard", JSON.stringify(comps))
             let element = document.createElement('a');
             element.setAttribute('href', 'data:text/plain;charset=utf-8,' + 
                 encodeURIComponent(JSON.stringify(this.state.board.getComponents())))
@@ -373,6 +411,12 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
 
     }
 
+    setPSU(state : PowerSupplyS) {
+        Object.assign(this.psuState, state);
+        // console.log(state);
+        
+    }
+
     render(): React.ReactNode {
         return <>
                 {this.props.isActive?<BBToolBar activeTool={this.state.toolName} simState={this.state.simState} setTool={this.setTool.bind(this)}/>:""}
@@ -385,6 +429,7 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
                 <label htmlFor="input-breadboard-file" >
             <Box
                 className="BreadBoardWindow"
+                id="BBWindow"
                 sx={{height: "100%", flexGrow: 1}}
             >
                 <Stage
@@ -400,7 +445,7 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
                 >
                     <Layer x={120} y={120}>
                         {/* <MultiMeter x={-450} y={-250}/> */}
-                        <PowerSupply x={-50} y={-250}/>
+                        <PowerSupply callback={this.setPSU.bind(this)} x={-50} y={-250}/>
                         <FunctionGenerator x={300} y={-250}/>
                         <Oscilloscope x={700} y={-300}/>
 

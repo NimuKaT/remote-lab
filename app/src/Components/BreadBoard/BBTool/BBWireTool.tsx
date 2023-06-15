@@ -33,18 +33,21 @@ export default class BBWireTool extends BBTools {
     onMouseDown(evt: KonvaEventObject<MouseEvent>): void {
         let pos = this.getPointerPos();
         // pos = this.snap(pos)
-        console.log("Wire tool mouse Down");
-        console.log(evt.evt.button);
+        // console.log("Wire tool mouse Down");
+        // console.log(evt.evt.button);
         
         
 
         if (evt.evt.button === 0) {
             let n = this.board.onBBNode(pos);
             
-            console.log(n);
-            
+            // console.log(n);
+            if (!n) {
+                pos = this.snap(pos)
+                n = this.board.onBBNode(pos)
+            }
             if (n) {
-            console.log('has pos');
+            // console.log('has pos');
                 pos.x = n.x;
                 pos.y = n.y;
                 if (this.isFirstnode) {

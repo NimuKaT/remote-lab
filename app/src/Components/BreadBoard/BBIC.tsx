@@ -12,6 +12,7 @@ export default class BBIC {
     absPos: Vector2d = {x:0,y:0};
     shiftVec: Vector2d = {x:0,y:0};
     nodes: Array<BBNode> = [];
+    isSelected: boolean = false;
 
     constructor(modelName: string, pos: Vector2d, pin: number) {
         this.modelName = modelName;
@@ -92,9 +93,13 @@ export default class BBIC {
                 flag = true
             }
         } 
-
+        this.isSelected = flag
 
         return flag
+    }
+
+    deselect() {
+        this.isSelected = false
     }
 
     getNodes() {

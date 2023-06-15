@@ -12,7 +12,7 @@ export default class BBWire {
     color: string = 'red'
     shiftVector: Vector2d = {x: 0, y:0}
     ref?: BBWireObj;
-
+    isSelected: boolean = false;
 
     placeNode(pos: Vector2d, index: number) {
         if (0 <= index && index <= 1) {
@@ -78,8 +78,8 @@ export default class BBWire {
                 flag = true
             }
         }
-
-
+        
+        this.isSelected = flag
         return flag
     }
 
@@ -97,7 +97,9 @@ export default class BBWire {
 
     }
 
-    deselect(){}
+    deselect(){
+        this.isSelected = false
+    }
 
     changeColor(newColor: string) {
         this.color = newColor

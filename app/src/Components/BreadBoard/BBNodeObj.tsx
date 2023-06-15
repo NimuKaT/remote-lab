@@ -9,11 +9,32 @@ interface BBNodeObjP {
 }
 
 interface BBNodeObjS {
-
+    isMouseOver: boolean
 }
 
 export default class BBNodeObj extends React.Component<BBNodeObjP, BBNodeObjS> {
     length: number = 12;
+
+    constructor(P: BBNodeObjP, S: BBNodeObjS) {
+        super(P, S)
+        this.state = {
+            isMouseOver: false
+        }
+    }
+
+    onMouseOver() {
+        this.setState({
+            isMouseOver: true
+        })
+    }
+
+    onMouseOut() {
+        this.setState({
+            isMouseOver: false
+        })
+    }
+
+
     render(): React.ReactNode {
         return <Rect
             x={ this.props.shift ? 
@@ -28,6 +49,8 @@ export default class BBNodeObj extends React.Component<BBNodeObjP, BBNodeObjS> {
             strokeWidth={0.1}
             fill={this.props.node.color? this.props.node.color: (this.props.valid ? 'green' : (this.props.valid === false ? 'red' : 'grey'))}
             opacity={this.props.node.opacity? this.props.node.opacity: 0.4}
+            onMouseOver={this.onMouseOver.bind(this)}
+            onMouseOut={this.onMouseOut.bind(this)}
             
         />
     }

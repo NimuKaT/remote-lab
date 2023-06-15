@@ -11,6 +11,10 @@ export default class NetListManger {
         this.genNetlists()
     }
 
+    getSwitches() {
+        return this.labspec?.spiceNetlist.switches
+    }
+
     genNetlists() {
         let netLists: Array<netListMap> = [];
         let togglePins: Array<number> = []; // Array index of pin
@@ -21,7 +25,7 @@ export default class NetListManger {
         this.labspec?.signal.digital.forEach((pin) => {
             excludePins.push(pin-1)
         })
-        console.log(this.labspec?.digitalPinsEnabled);
+        // console.log(this.labspec?.digitalPinsEnabled);
         
         this.labspec?.digitalPinsEnabled.forEach((pin, index) => {
             if (pin && excludePins.findIndex((value) => {return value === index;}) === -1) {
@@ -94,12 +98,12 @@ export default class NetListManger {
     compareNetlist(targetNet: Array<string>) {
         let pinconfig: {"digital": Array<Array<boolean>>,"analogue": Array<Array<boolean>>} = {"digital":[], "analogue": []}
         let target = this.trimNetlist(targetNet)
-        console.log(target)
+        // console.log(target)
         this.netLists.every((ref) => {
             let matched = netListSolver(ref.netList, target);
             if (matched === 0) {
-                console.log("Found Matching netlist")
-                console.log(ref.netList)
+                // console.log("Found Matching netlist")
+                // console.log(ref.netList)
                 pinconfig = ref.pinConfig;
                 return 0
             }

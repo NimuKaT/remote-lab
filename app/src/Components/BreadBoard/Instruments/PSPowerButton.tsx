@@ -4,6 +4,7 @@ import { Circle } from "react-konva";
 type PSPowerButtonP = {
     x: number,
     y: number,
+    callback?: (state: boolean) => any
 }
 type PSPowerButtonS = {
     on: boolean
@@ -18,6 +19,9 @@ export default class PSPowerButton extends React.Component<PSPowerButtonP, PSPow
     }
 
     onButtonPress() {
+        if (this.props.callback) {
+            this.props.callback(!this.state.on)
+        }
         this.setState({
             on: !this.state.on
         })

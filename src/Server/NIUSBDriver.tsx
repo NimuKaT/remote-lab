@@ -88,12 +88,12 @@ export default class NIUSBDRiver {
             if (err) {
                 console.log(stderr)
             }
-            console.log(stdout)
+            // console.log(stdout)
             process = execFile(this.executable, ['1', digitalWrite[1]], null, (err, stdout, stderr) => {
                 if (err) {
                     console.log(stderr);
                 }
-                console.log(stdout);
+                // console.log(stdout);
                 if (callback !== undefined) {
                     callback();
                 }

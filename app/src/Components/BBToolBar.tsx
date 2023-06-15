@@ -1,4 +1,4 @@
-import { CropFree, Delete, HighlightAlt, Memory, PanTool, PlayArrow, Stop, ZoomIn, ZoomOut } from "@mui/icons-material";
+import { CropFree, Delete, FileDownload, HighlightAlt, Memory, PanTool, PlayArrow, Stop, ZoomIn, ZoomOut } from "@mui/icons-material";
 import { Button, Box, Typography, Stack, SvgIcon } from "@mui/material";
 
 // import { IconButton } from "material-ui";
@@ -149,6 +149,7 @@ export default class BBToolBar extends React.Component<BBToolBarP, BBToolBarS> {
                     </Stack>
                 </Box>
                 </Stack>
+                <Stack direction='row' justifyContent='center' alignItems='center' spacing={1}>
                 <Box>
                     <Stack direction={'column'} justifyContent={'center'} alignItems={'center'}>
                     <Button variant={this.props.simState === "Running"? 'contained' : 'outlined'}
@@ -163,6 +164,19 @@ export default class BBToolBar extends React.Component<BBToolBarP, BBToolBarS> {
                     <Typography>Run</Typography>
                     </Stack>
                 </Box>
+
+                <Box>
+                    <Stack direction={'column'} justifyContent={'center'} alignItems={'center'}>
+                    <Button variant='outlined'
+                        onClick={this.props.setTool.bind(null, "Export")}
+                    >
+                            <FileDownload sx={{flexGrow: 1}}/>
+                    </Button>
+                    <Typography>Save File</Typography>
+                    </Stack>
+                </Box>
+
+                </Stack>
                 </Stack>
 
             </Box>
