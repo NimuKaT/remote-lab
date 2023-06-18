@@ -5,7 +5,7 @@ import { Rect } from "react-konva";
 
 export default class BBDelete extends BBTools {
     onInitialise(): void {
-        console.log("BBDelete");
+        // console.log("BBDelete");
         
     }
 
@@ -17,8 +17,8 @@ export default class BBDelete extends BBTools {
     }
 
     onMouseMove(evt: KonvaEventObject<MouseEvent>): void {
-        this.board.deselect()
         if (this.isSelecting) {
+        this.board.deselect()
             let pos = this.getPointerPos();
             if (Math.sqrt(Math.pow(this.mouseRef.x - pos.x, 2) + Math.pow(this.mouseRef.y - pos.y,2)) >= this.moveThreshold) {
                 this.hasMoved = true

@@ -305,7 +305,7 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
     }
 
     keydown(evt: KeyboardEvent) {
-        console.log("BBKey: " + evt.key);
+        // console.log("BBKey: " + evt.key);
         this.state.currTool?.onKeyDown(evt);
         if (evt.key === 'q') {
             this.setTool("IC")
@@ -368,9 +368,9 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
             }
         }
         axios.post(url, data, config).then((value) => {
-            console.log(this.props.SnackbarHook)
+            // console.log(this.props.SnackbarHook)
             if (value.data === "ok") {
-                console.log("ok")
+                // console.log("ok")
                 this.props.SnackbarHook?.setSnackbar("Successfully implemented circuit on PCB!", "success", 6000);
             } else {
                 this.props.SnackbarHook?.setSnackbar("Failed to implement circuit on PCB! The circuit has been turned off.", 'error', 6000)
@@ -398,7 +398,7 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
                 try {
                     let data = JSON.parse(value);
                     let bb = data as BBFileRep;
-                    console.log(bb);
+                    // console.log(bb);
                     this.props.modalHook?.openModal({}, 
                         <BBFileLoadModal closeFunc={this.props.modalHook.getClose()} submitFunc={this.state.board.loadCompoents.bind(this.state.board, bb)}/>,
                         () => {})
