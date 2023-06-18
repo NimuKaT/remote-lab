@@ -42,7 +42,7 @@ export default class PSknob extends React.Component<PSknobP, PSknobS> {
     onClick(evt: KonvaEventObject<MouseEvent>) {
         evt.cancelBubble = true
         this.setState({isMouseDown: true, hasMoved: false, refPos: evt.target.getRelativePointerPosition()})
-        console.log(evt.target.getRelativePointerPosition())
+        // console.log(evt.target.getRelativePointerPosition())
     }
     
     onMouseMove(evt: KonvaEventObject<MouseEvent>) {
@@ -55,7 +55,7 @@ export default class PSknob extends React.Component<PSknobP, PSknobS> {
             if (x < 0) {
                 angle = angle + 180
             }
-            console.log(pos);
+            // console.log(pos);
             if (angle < this.props.minAng) {
                 angle = this.props.minAng
             }
@@ -63,7 +63,7 @@ export default class PSknob extends React.Component<PSknobP, PSknobS> {
                 angle = this.props.maxAng
             }
             
-            console.log(angle)
+            // console.log(angle)
             this.props.setNum(1-(this.state.currAng-this.props.minAng) / (this.props.maxAng - this.props.minAng))
             this.setState({currAng: angle})
         }

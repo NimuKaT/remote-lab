@@ -1,1 +1,1 @@
-env.bat && npm run run-build
+env.bat && npm run run

@@ -5,7 +5,7 @@ import { Rect } from "react-konva";
 
 export default class BBDelete extends BBTools {
     onInitialise(): void {
-        console.log("BBDelete");
+        // console.log("BBDelete");
         
     }
 
