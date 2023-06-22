@@ -1,4 +1,4 @@
-import { env } from "node:process"
+import { env, exit } from "node:process"
 import NIUSBDRiver from "./NIUSBDriver"
 import express from 'express'
 import readline from "readline"
@@ -7,6 +7,7 @@ import LabSpec from "../labSpec"
 import NetListManger from "./NetListManager"
 import bodyParser from "body-parser"
 import { channel } from "node:diagnostics_channel"
+import { netListSolver } from "./NetListSolver"
 
 // const express = require('express')
 // import express, { Express } from "express"
@@ -133,17 +134,28 @@ function readCommand(answer: string) {
         if (values[0].toLocaleLowerCase() === 'list') {
             console.log(netlistmanager.netLists)
         }
-        if (values[0] === '?') {
-            rl.write("Command List:\n\tlist \t - lists the current valid netlists\n\t change (switch number) (switch state) t - preparse to change the net list for the specified switch and swicth state")
+        else if (values[0] === '?') {
+            rl.write("Command List:\n\tlist \t - lists the current valid netlists\n\t change (switch number) (switch state) - prepares to change the net list for the specified switch and swicth state")
+        }
+        else if (values[0].toLocaleLowerCase() === 'q') {
+            exit(0);
         }
     }
     if (values.length === 3 ) {
         if (values[0].toLocaleLowerCase() === 'change') {
-            if (parseInt(values[1]) >= 1 && parseInt(values[1]) <= 5) {
+            if (parseInt(values[1]) === -1 || (parseInt(values[1]) >= 1 && parseInt(values[1]) <= 5)) {
                 pinNum = parseInt(values[1]);
                 // console.log("got pin: %d", pinNum);
-                
-                if (values[2].toLocaleLowerCase() === 'on' || values[2].toLocaleLowerCase() === 'off') {
+
+                if (pinNum === -1) {
+                    flag = true;
+                    newNet = [];
+                    netlistmanager.labspec?.spiceNetlist.baseNetlist.forEach((net) => {
+                        newNet.push(net);
+                    })
+                    chagneNetList(" ")
+                }
+                else if (values[2].toLocaleLowerCase() === 'on' || values[2].toLocaleLowerCase() === 'off') {
                     if (values[2].toLocaleLowerCase() === 'on') {
                         isOn = true
                     } else {
@@ -173,6 +185,10 @@ function readCommand(answer: string) {
 
     rl.write("Current setting for the PCB is:\n")
     // rl.write(JSON.stringify(netlistmanager.getSwitches()))
+    rl.write("\tBase Netlist:\n")
+    netlistmanager.labspec?.spiceNetlist.baseNetlist.forEach((net) => {
+        rl.write("\t\t" + net + "\n")
+    })
     netlistmanager.getSwitches()?.digital.forEach((sw) => {
         rl.write("\tpin number: " + sw.pinNum + "\n\t\ton: \n")
         sw.on.forEach((net) => {
@@ -201,12 +217,22 @@ function chagneNetList(answer: string) {
             val.splice(0,1);
             newNet.push(val.join(" "));
         } else if (cmd === 'remove') {
-            let i = parseInt(val[1]);
-            if (0 <= i && i < newNet.length) {
-                newNet.splice(i,1);
+            if (val.length === 1) {
+                newNet = [];
+            } else {
+                let i = parseInt(val[1]);
+                if (0 <= i && i < newNet.length) {
+                    newNet.splice(i,1);
+                }
             }
         } else if (cmd === 'confirm') {
             flag = true;
+            if (pinNum === -1) {
+                if (netlistmanager.labspec !== undefined) {
+                    netlistmanager.labspec.spiceNetlist.baseNetlist = newNet;
+                }
+            } else {
+
             netlistmanager.getSwitches()?.digital.every((sw) => {
                 if (sw.pinNum === pinNum) {
                     if (isOn) {
@@ -219,6 +245,7 @@ function chagneNetList(answer: string) {
                 }
                 return true
             })
+            }
             netlistmanager.genNetlists()
             readCommand('')
         } else if (cmd === 'cancel') {
@@ -238,21 +265,28 @@ function chagneNetList(answer: string) {
         if (!flag) {
         rl.write("Currently changing switch " + pinNum + " for state " + (isOn? "on": "off") + "\n")
         rl.write("Current Net:\n")
-        netlistmanager.getSwitches()?.digital.every((sw) => {
-            if (sw.pinNum === pinNum) {
-                if (isOn) {
-                    sw.on.forEach((net) => {
-                        rl.write("\t" + net + "\n")
-                    })
-                } else {
-                    sw.off.forEach((net) => {
-                        rl.write("\t" + net + "\n")
-                    })
-                }
+        if (pinNum === -1) {
+            netlistmanager.labspec?.spiceNetlist.baseNetlist.forEach((net) => {
+                rl.write("\t" + net + "\n");
                 return false
-            }
-            return true
-        })
+            })
+        } else {
+            netlistmanager.getSwitches()?.digital.every((sw) => {
+                if (sw.pinNum === pinNum) {
+                    if (isOn) {
+                        sw.on.forEach((net) => {
+                            rl.write("\t" + net + "\n")
+                        })
+                    } else {
+                        sw.off.forEach((net) => {
+                            rl.write("\t" + net + "\n")
+                        })
+                    }
+                    return false
+                }
+                return true
+            })
+        }
         rl.write("New Net:\n")
         newNet.forEach((net) => {
             rl.write("\t" + net + "\n")
