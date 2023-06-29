@@ -1,27 +1,73 @@
 {
     "driverName": "NIUSB",
     "digitalPinsEnabled": [
-        1, 1, 1, 1, 1, 0, 0, 0,
-        0, 0, 0, 1, 0, 0, 0, 0
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
     ],
     "analoguePinsEnabled": [
-        0, 0, 0, 0, 0, 0, 0, 0
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
     ],
     "defaultPinState": {
         "digital": [
-            0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 1, 0, 0, 0, 0
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
         ],
         "analogue": [
-            0, 0, 0, 0, 0, 0, 0, 0
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
         ]
     },
     "power": {
-        "digital": [12],
+        "digital": [
+            12
+        ],
         "analogue": []
     },
     "signal": {
-        "digital": [1],
+        "digital": [
+            1
+        ],
         "analogue": []
     },
     "spiceNetlist": {
@@ -33,7 +79,8 @@
             "digital": [
                 {
                     "pinNum": 1,
-                    "on": ["Vsig input 0 0",
+                    "on": [
+                        "Vsig input 0 0",
                         "XU2 input 0 OscCH1",
                         "XU3 output 0 OscCH2"
                     ],
@@ -41,22 +88,32 @@
                 },
                 {
                     "pinNum": 2,
-                    "on": ["Rf2 N002 output 1k"],
-                    "off": ["Rf1 N002 output 50k"]
+                    "on": [
+                        "Rf2 N002 output 1k"
+                    ],
+                    "off": [
+                        "Rf1 N002 output 50k"
+                    ]
                 },
                 {
                     "pinNum": 3,
-                    "on": ["Cc1 N001 N004 30p"],
+                    "on": [
+                        "Cc1 N001 N004 30p"
+                    ],
                     "off": []
                 },
                 {
                     "pinNum": 4,
-                    "on": ["Cc2 N001 N004 10p"],
+                    "on": [
+                        "Cc2 N001 N004 10p"
+                    ],
                     "off": []
                 },
                 {
                     "pinNum": 5,
-                    "on": ["Cc3 N001 N004 20p"],
+                    "on": [
+                        "Cc3 N001 N004 20p"
+                    ],
                     "off": []
                 },
                 {
@@ -66,12 +123,22 @@
                         "V2 0 Vss 15"
                     ],
                     "off": []
-                }             
+                }
             ]
         }
+    },
+    "PSUCondition": {
+        "V1": 15,
+        "V2": 0,
+        "A1": 0.1,
+        "A2": 0.1,
+        "buttonState": [
+            true,
+            false
+        ],
+        "netlist": [
+            ""
+        ]
     }
-
-
-
     
 }

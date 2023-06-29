@@ -8,6 +8,7 @@ import NetListManger from "./NetListManager"
 import bodyParser from "body-parser"
 import { channel } from "node:diagnostics_channel"
 import { netListSolver } from "./NetListSolver"
+import { write } from "node:fs"
 
 // const express = require('express')
 // import express, { Express } from "express"
@@ -85,14 +86,20 @@ app.get('/api/stop', (req, res, next) => {
     prevPin.digital[0][0] = false
     niusb.writeToDevice(prevPin, ()=> {
     prevPin.digital[1][3] = false
-    niusb.writeToDevice(prevPin)})
+    niusb.writeToDevice(prevPin)
+    // printPinState()
+    })
+    // rl.write("Curent key settings are: " + prevPin);})
     res.send("stopped")
 })
 
 app.get('/api/oscilloscope', (req, res, next) => {
     res.send(oscillo)
 })
-
+ 
+app.get('/api/psuSpec', (req, res, next) => {
+    res.send(netlistmanager.getPSUSpec())
+})
 // Select Lab file
 
 let specificationDir = "./bin/dist/Specifications/"
@@ -105,7 +112,17 @@ fs.readFile("./bin/dist/config.json", 'utf-8').then((data) => {
     oscillo = JSON.parse(data)?.Oscilloscope;
 })
 
+function printPinState() {
 
+    rl.write("\nCurrent Pin state is:\n\tDigital:\n")
+    prevPin.digital.forEach((digPin, index) => {
+        rl.write("\t\tDigital Pins " + index + "\n")
+        digPin.forEach((state, i) => {
+            rl.write("\t\t\t" + (state? "1" : "0") + "\n")
+        })
+    })
+
+}
 
 function getLabFile() {
     rl.question("Please enter the file name of the lab file to be opened: ", (answer) => {
@@ -125,20 +142,32 @@ function readLabFile(fileName: string) {
         getLabFile()
     })
 }
+
+function writeLabFile() {
+    fs.writeFile(specificationDir + labFile, JSON.stringify(netlistmanager.labspec, null, 4), 'utf-8')
+}
+
 let pinNum = 0;
 let isOn = true;
 function readCommand(answer: string) {
     let values: Array<string> = answer.split(" ")
     let flag = false;
+    let printNets = true;
     if (values.length === 1) {
         if (values[0].toLocaleLowerCase() === 'list') {
             console.log(netlistmanager.netLists)
+            printNets = false
         }
         else if (values[0] === '?') {
-            rl.write("Command List:\n\tlist \t - lists the current valid netlists\n\t change (switch number) (switch state) - prepares to change the net list for the specified switch and swicth state")
+            rl.write("Command List:\n\tlist \t - lists the current valid netlists\n\tchange (switch number) (switch state) - prepares to change the net list for the specified switch and swicth state\n")
+            printNets = false;
         }
         else if (values[0].toLocaleLowerCase() === 'q') {
             exit(0);
+        }
+        else if (values[0] === "state") {
+            printPinState();
+            printNets = false
         }
     }
     if (values.length === 3 ) {
@@ -183,22 +212,25 @@ function readCommand(answer: string) {
     }
     if (!flag) {
 
-    rl.write("Current setting for the PCB is:\n")
-    // rl.write(JSON.stringify(netlistmanager.getSwitches()))
-    rl.write("\tBase Netlist:\n")
-    netlistmanager.labspec?.spiceNetlist.baseNetlist.forEach((net) => {
-        rl.write("\t\t" + net + "\n")
-    })
-    netlistmanager.getSwitches()?.digital.forEach((sw) => {
-        rl.write("\tpin number: " + sw.pinNum + "\n\t\ton: \n")
-        sw.on.forEach((net) => {
-            rl.write("\t\t\t" + net + "\n")
-        })
-        rl.write("\t\toff: \n")
-        sw.off.forEach((net) => {
-            rl.write("\t\t\t" + net + "\n")
-        })
-    })
+        if (printNets) {
+
+            rl.write("Current setting for the PCB is:\n")
+// rl.write(JSON.stringify(netlistmanager.getSwitches()))
+            rl.write("\tBase Netlist:\n")
+            netlistmanager.labspec?.spiceNetlist.baseNetlist.forEach((net) => {
+                rl.write("\t\t" + net + "\n")
+            })
+            netlistmanager.getSwitches()?.digital.forEach((sw) => {
+                rl.write("\tpin number: " + sw.pinNum + "\n\t\ton: \n")
+                sw.on.forEach((net) => {
+                    rl.write("\t\t\t" + net + "\n")
+                })
+                rl.write("\t\toff: \n")
+                sw.off.forEach((net) => {
+                    rl.write("\t\t\t" + net + "\n")
+                })
+            })
+        }
     rl.question("Enter a command: ", readCommand);
     }
 }
@@ -230,6 +262,7 @@ function chagneNetList(answer: string) {
             if (pinNum === -1) {
                 if (netlistmanager.labspec !== undefined) {
                     netlistmanager.labspec.spiceNetlist.baseNetlist = newNet;
+                    writeLabFile()
                 }
             } else {
 
@@ -241,6 +274,7 @@ function chagneNetList(answer: string) {
                         sw.off = newNet;
                     }
                     newNet = []
+                    writeLabFile()
                     return false
                 }
                 return true
@@ -299,7 +333,9 @@ function chagneNetList(answer: string) {
 
 app.listen(port, () => {
     console.log('Server listening to ' + port)
-readLabFile("lab01.json")
+// readLabFile("lab01.json")
+    // readLabFile("")
+    getLabFile();
 })
 
 // getLabFile()

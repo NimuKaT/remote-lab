@@ -15,6 +15,10 @@ export default class NetListManger {
         return this.labspec?.spiceNetlist.switches
     }
 
+    getPSUSpec() {
+        return this.labspec?.PSUCondition;
+    }
+
     genNetlists() {
         let netLists: Array<netListMap> = [];
         let togglePins: Array<number> = []; // Array index of pin

@@ -1,4 +1,5 @@
 export default interface LabSpec {
+    "labName": string | undefined,
     "driverName": string,
     "digitalPinsEnabled": Array<number>,
     "analoguePinsEnabled": Array<number>,
@@ -14,6 +15,14 @@ export default interface LabSpec {
                 "off": Array<string>
             }>
         }
+    },
+    "PSUCondition"?: {
+        "V1": number,
+        "V2": number,
+        "A1": number,
+        "A2": number,
+        "buttonState": [boolean, boolean],
+        "netlist": [string]
     }
 }
 

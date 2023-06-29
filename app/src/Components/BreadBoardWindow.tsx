@@ -18,12 +18,13 @@ import FunctionGenerator from "./BreadBoard/Instruments/FunctionGenarator";
 import Oscilloscope from "./BreadBoard/Instruments/Oscilloscope";
 import MultiMeter from "./BreadBoard/Instruments/MultiMeter";
 import BBSelect from "./BreadBoard/BBTool/BBSelect";
-import axios, { AxiosRequestConfig } from "axios";
+import axios, { Axios, AxiosRequestConfig } from "axios";
 import SnackbarHook from "./SnackbarHook"
 import BBToolBar from "./BBToolBar";
 import BBDelete from "./BreadBoard/BBTool/BBDelete";
 import BBFileRep from "./BreadBoard/BBTypes/BBFileRep";
 import BBFileLoadModal from "./BreadBoard/Modal/BBFileLoadModal";
+import BBPSUSpec from "./BreadBoard/BBPSUSpec";
 
 
 interface BBWindowP {
@@ -258,29 +259,59 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
                 toolName: "Pan",
                 simState: "Running"
             })
-            /// HARD CODE
-            if (this.psuState.ch1A > 0.05 && this.psuState.ch2A > 0.05) {
-                if (14.5 <= this.psuState.ch1V && this.psuState.ch1V <= 15.5) {
-                    if (this.psuState.mode1 && !this.psuState.mode2 && this.psuState.pwr) {
-
-                        this.state.board.getNetList();
-                        this.submitNetList();
-                    }
-                    else {
-                        this.props.SnackbarHook?.setSnackbar("Failed to implement circuit on PCB! The circuit has been turned off.\nMake sure you configure the power supply correctly.", 'error', 6000)
-                        this.stopSim()
+            //
+            axios.get("/api/psuSpec").then((value) => {
+                // value.data;
+                console.log(value.data)
+                let fail: boolean = true;
+                try {
+                    let spec: BBPSUSpec = value.data as BBPSUSpec;
+                    if (this.psuState.ch1A > spec.A1 -0.05 && this.psuState.ch2A > spec.A1 -0.05) {
+                        if (spec.V1 <= 0 || (spec.V1 -0.5 <= this.psuState.ch1V && this.psuState.ch1V <= spec.V1 + 0.5)) {
+                            if (spec.V2 <= 0 || (spec.V2 -0.5 <= this.psuState.ch1V && this.psuState.ch1V <= spec.V2 + 0.5)) {
+                                if (this.psuState.mode1 === spec.buttonState[0] && 
+                                    this.psuState.mode2 === spec.buttonState[1] &&
+                                    this.psuState.pwr) {
+                                        this.submitNetList();
+                                        fail = false
+                                }
+                            }
+                        }
                     }
                 }
-                else {
+                catch (e) {
+
+                }
+                if (fail) {
                     this.props.SnackbarHook?.setSnackbar("Failed to implement circuit on PCB! The circuit has been turned off.\nMake sure you configure the power supply correctly.", 'error', 6000)
                     this.stopSim()
                 }
+            })
 
-            }
-            else {
-                this.props.SnackbarHook?.setSnackbar("Failed to implement circuit on PCB! The circuit has been turned off.\nMake sure you configure the power supply correctly.", 'error', 6000)
-                this.stopSim()
-            }
+
+            /// HARD CODE
+            // if (this.psuState.ch1A > 0.05 && this.psuState.ch2A > 0.05) {
+            //     if (14.5 <= this.psuState.ch1V && this.psuState.ch1V <= 15.5) {
+            //         if (this.psuState.mode1 && !this.psuState.mode2 && this.psuState.pwr) {
+
+            //             this.state.board.getNetList();
+            //             this.submitNetList();
+            //         }
+            //         else {
+            //             this.props.SnackbarHook?.setSnackbar("Failed to implement circuit on PCB! The circuit has been turned off.\nMake sure you configure the power supply correctly.", 'error', 6000)
+            //             this.stopSim()
+            //         }
+            //     }
+            //     else {
+            //         this.props.SnackbarHook?.setSnackbar("Failed to implement circuit on PCB! The circuit has been turned off.\nMake sure you configure the power supply correctly.", 'error', 6000)
+            //         this.stopSim()
+            //     }
+
+            // }
+            // else {
+            //     this.props.SnackbarHook?.setSnackbar("Failed to implement circuit on PCB! The circuit has been turned off.\nMake sure you configure the power supply correctly.", 'error', 6000)
+            //     this.stopSim()
+            // }
 
 
         } else if (toolName === 'Stop') {
