@@ -31,8 +31,12 @@ export default class BBPlaceStatic extends BBTools {
         let pos = this.getPointerPos();
         let delta = this.getDelta(pos);
         this.board.moveComponents(delta);
+        let n = this.board.onBBNode(pos);
+        if (n !== undefined && n.y === 96) {
+            // Add check for Other ICs
+
         this.board.placeComponents();
-        this.board.foreceUpdate();
+        // this.board.foreceUpdate();
         
         this.mouseRef = pos;
         // console.log("raw pos" + pos.x + " " + pos.y);
@@ -43,6 +47,7 @@ export default class BBPlaceStatic extends BBTools {
         this.board.createNewStaticComp(this.compName, pos, this.pinCount);
         this.board.moveComponents({x:0, y:0})
         this.board.foreceUpdate();
+        }
         
 
     }
