@@ -98,6 +98,21 @@ export default class BBIC {
         return flag
     }
 
+    isHover(pos: Vector2d) {
+        let flag = false
+        let lx = this.localPos.x -8;
+        let ly = this.localPos.y;
+        let lw = this.pinCount/2*24 - 8;
+        let lh = 48;
+        if (lx <= pos.x && pos.x <= lx + lw) {
+            if (ly <= pos.y && pos.y <= ly + lh) {
+                flag = true
+                this.isSelected = true
+            }
+        }
+        return flag
+    }
+
     deselect() {
         this.isSelected = false
     }

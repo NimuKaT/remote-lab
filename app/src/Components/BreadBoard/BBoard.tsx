@@ -631,4 +631,39 @@ export default class BBoard {
         let comp = this.getComponents();
         localStorage.setItem("BreadBoard", JSON.stringify(comp))
     }
+    
+    hasSelected() {
+        return this.selectedIC.length + this.selectedWire.length + this.selectedStretch.length > 0;
+    }
+
+    hover(pos: Vector2d) {
+        this.wires.every((wire) => {
+            let flag = wire.isHover(pos)
+            if (flag) {
+                this.selectedWire.push(wire)
+                this.foreceUpdate()
+            }
+            return !flag
+        })
+        // if (!this.hasSelected()) {
+        //     this.stretchComp.every((comp) => {
+        //         let flag = comp.isHover(pos)
+        //         if (flag) {
+        //             this.selectedStretch.push(comp)
+        //             this.foreceUpdate()
+        //         }
+        //         return !flag;
+        //     })
+                if (!this.hasSelected()) {
+                    this.ic.every((comp) => {
+                        let flag = comp.isHover(pos);
+                        if (flag) {
+                            this.selectedIC.push(comp);
+                            this.foreceUpdate()
+                        }
+                        return !flag
+                    })
+                }
+        // }
+    }
 }

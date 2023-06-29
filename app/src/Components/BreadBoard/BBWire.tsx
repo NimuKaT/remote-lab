@@ -98,6 +98,10 @@ export default class BBWire {
     }
 
     deselect(){
+        // if (this.isSelected) {
+        //     this.isSelected = false
+        //     this.ref?.forceUpdate()
+        // }
         this.isSelected = false
     }
 
@@ -115,5 +119,50 @@ export default class BBWire {
             "anchors": this.anchors,
             "color": this.color
         }
+    }
+
+    isHover(pos: Vector2d) {
+        let flag = false;
+        let x1 = this.nodePos[0].x
+        let y1 = -this.nodePos[0].y
+        let x2 = this.nodePos[1].x
+        let y2 = -this.nodePos[1].y
+        let lx = x1
+        let ly = -y1;
+        let hx = x2;
+        let hy = -y2;
+        if (lx > hx) {
+            lx = hx;
+            hx = x1;
+        }
+        if (ly > hy) {
+            ly = hy;
+            hy = -y1;
+        }
+        if (lx <= pos.x && pos.x <= hx) {
+            if (ly <= pos.y && pos.y <= hy) {
+        //         let dx = hx - lx;
+        //         let dy = -(hy - ly);
+        //         let c = dy*lx + dx*ly;
+        //         d = Math.abs(dy*pos.x - dx*pos.y + c) / Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+                let dx = x2 - x1;
+                let dy = -(y2 - y1);
+                let c = - dy*x1 - dx*y1;
+                let d = Math.abs(dy*pos.x - dx*pos.y + c) / Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+                let mx = (x2+x1)/2
+                let my = (y2+y1)/2;
+                let mc = - dx*mx + dy*my;
+                let md = Math.abs(dx*pos.x + dy*pos.y + mc) / Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+                // console.log("Distance: " + d + " Distance: " + md);
+                if (d <= 5 && md <= Math.sqrt(Math.pow(x1-x2,2) + Math.pow(y1-y2,2))) {
+                    // console.log("Select");
+                    
+                    flag = true
+                    this.isSelected = true
+                }
+            }
+        }
+        return flag
+        
     }
 }
