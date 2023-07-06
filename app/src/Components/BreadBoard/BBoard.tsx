@@ -101,11 +101,11 @@ export default class BBoard {
         // MutliMeter
         // this.nodes.push(new BBNode({x:-135, y: -225}, "Mch1+", 'red', 1))
         // this.nodes.push(new BBNode({x:-155, y: -125}, "Mch1-", 'black', 1))
-        // this.nodes.push(new BBNode({x:-155, y: -175}, "Mch1+", 'red', 1))
+        this.nodes.push(new BBNode({x:-155, y: -175}, "Mch2+", 'red', 1)) // this +
         
-        // this.nodes.push(new BBNode({x:-115, y: -225}, "Mch1+", 'red', 1))
-        // this.nodes.push(new BBNode({x:-115, y: -175}, "Mch1-", 'black', 1))
-        // this.nodes.push(new BBNode({x:-115, y: -125}, "Mch1+", 'red', 1))
+        this.nodes.push(new BBNode({x:-115, y: -225}, "Mch3+", 'red', 1))
+        this.nodes.push(new BBNode({x:-115, y: -175}, "Mch2-", 'black', 1)) // This
+        this.nodes.push(new BBNode({x:-115, y: -125}, "Mch4+", 'red', 1))
 
 
 
@@ -520,6 +520,8 @@ export default class BBoard {
         nets.push({prefix: 'XU', nodes:[{x: 958, y:-105}, {x:942, y: -105}], value: "OscCH2"})
         nets.push({prefix: 'XU', nodes:[{x: 998, y:-105}, {x:982, y: -105}], value: "OscCH3"})
         nets.push({prefix: 'XU', nodes:[{x: 1038, y:-105}, {x:1022, y: -105}], value: "OscCH4"})
+        nets.push({prefix: 'XU', nodes:[{x: -155, y:-175}, {x:552, y: -100}], value: "DMM+"})
+        nets.push({prefix: 'XU', nodes:[{x: -115, y:-175}, {x:552, y: -100}], value: "DMM-"})
         nets.forEach((net) => {
                 let nodes: Array<string> = []
                 net.nodes.forEach((n) => {

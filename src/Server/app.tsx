@@ -172,7 +172,7 @@ function readCommand(answer: string) {
     }
     if (values.length === 3 ) {
         if (values[0].toLocaleLowerCase() === 'change') {
-            if (parseInt(values[1]) === -1 || (parseInt(values[1]) >= 1 && parseInt(values[1]) <= 5)) {
+            if (parseInt(values[1]) === -1 || (parseInt(values[1]) >= 1 && parseInt(values[1]) <= 11)) {
                 pinNum = parseInt(values[1]);
                 // console.log("got pin: %d", pinNum);
 

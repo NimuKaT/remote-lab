@@ -26,9 +26,9 @@ export default class NetListManger {
         this.labspec?.power.digital.forEach((pin) => {
             excludePins.push(pin - 1)
         })
-        this.labspec?.signal.digital.forEach((pin) => {
-            excludePins.push(pin-1)
-        })
+        // this.labspec?.signal.digital.forEach((pin) => {
+        //     excludePins.push(pin-1)
+        // })
         // console.log(this.labspec?.digitalPinsEnabled);
         
         this.labspec?.digitalPinsEnabled.forEach((pin, index) => {
@@ -54,6 +54,15 @@ export default class NetListManger {
 
             togglePins.forEach((pin, index) => {
                 digtialPins[pin] = (i & (1 << index)) > 0
+                
+                // LAB 2 ONLY
+                if (pin === 1 && !digtialPins[pin] && (i & (1 << (index+1))) > 0) {
+                    // Skip
+                    console.log("skipping pin 2 and 3")
+                } else{
+
+
+
                 let switchIndex = this.labspec?.spiceNetlist.switches.digital.findIndex((swConfig) => {
                     return swConfig.pinNum === pin+1
                 })
@@ -69,6 +78,10 @@ export default class NetListManger {
                             netList.push(net)
                         })
                     }
+                }
+
+
+
                 }
                
             })
@@ -92,7 +105,7 @@ export default class NetListManger {
             digtialPins.forEach((value, pin) => {
                 newPins[Math.floor(pin/8)].push(value);
             })
-            netLists.push({netList: netList, pinConfig: {"digital": newPins, "analogue": []}})
+            netLists.push({netList: this.trimNetlist(netList), pinConfig: {"digital": newPins, "analogue": []}})
             
         }
         this.netLists = netLists;
@@ -101,7 +114,23 @@ export default class NetListManger {
 
     compareNetlist(targetNet: Array<string>) {
         let pinconfig: {"digital": Array<Array<boolean>>,"analogue": Array<Array<boolean>>} = {"digital":[], "analogue": []}
-        let target = this.trimNetlist(targetNet)
+        let newTarget: Array<string> = [];
+        targetNet.forEach((net) => {
+            let parts = net.split(" ");
+            if (parts[parts.length-1] === "CA3083") {
+                newTarget.push("XU " + parts[1] + " " + parts[16] + " " + parts[15] + " Qm")
+                newTarget.push("XU " + parts[2] + " " + parts[3] + " " + parts[4] + " Qm")
+                newTarget.push("XU " + parts[7] + " " + parts[6] + " " + parts[8] + " Qn")
+                newTarget.push("XU " + parts[9] + " " + parts[10] + " " + parts[11] + " Qn")
+                newTarget.push("XU " + parts[14] + " " + parts[13] + " " + parts[12] + " Qn")
+            } else {
+                newTarget.push(net)
+            }
+        })
+        console.log(newTarget)
+
+
+        let target = this.trimNetlist(newTarget)
         // console.log(target)
         this.netLists.every((ref) => {
             let matched = netListSolver(ref.netList, target);

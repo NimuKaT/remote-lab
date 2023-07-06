@@ -475,7 +475,7 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
                     onMouseUp={this.onMouseUp.bind(this)}
                 >
                     <Layer x={120} y={120}>
-                        {/* <MultiMeter x={-450} y={-250}/> */}
+                        <MultiMeter x={-450} y={-250}/>
                         <PowerSupply callback={this.setPSU.bind(this)} x={-50} y={-250}/>
                         <FunctionGenerator x={300} y={-250}/>
                         <Oscilloscope x={700} y={-300}/>

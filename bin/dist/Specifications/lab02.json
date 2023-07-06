@@ -1,0 +1,208 @@
+{
+    "driverName": "NIUSB",
+    "digitalPinsEnabled": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0
+    ],
+    "analoguePinsEnabled": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+    ],
+    "defaultPinState": {
+        "digital": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+        ],
+        "analogue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    "power": {
+        "digital": [
+            12
+        ],
+        "analogue": []
+    },
+    "signal": {
+        "digital": [
+            6
+        ],
+        "analogue": []
+    },
+    "spiceNetlist": {
+        "baseNetlist": [
+            "XU5 Vb Vb Vee Qn",
+            "XU6 Ve Vb Vee Qn",
+            "XU8 N004 0 DMM-",
+            "XU9 Ve 0 OscCH3",
+            "XU10 Vb 0 OscCH4"
+        ],
+        "switches": {
+            "digital": [
+                {
+                    "pinNum": 1,
+                    "on": [
+                        "XU1 input 0 OscCH1",
+                        "XU2 output 0 OscCH2"
+                    ],
+                    "off": [
+                        "XU1 Vo1 0 OscCH1",
+                        "XU2 Vo2 0 OscCH2"
+                    ]
+                },
+                {
+                    "pinNum": 2,
+                    "on": [
+                        "R9 Vi N001",
+                        "R1 N001 0"
+                    ],
+                    "off": [
+                        "R7 Vi- 0",
+                        "R8 Vi- 0"
+                    ]
+                },
+                {
+                    "pinNum": 3,
+                    "on": [
+                        "XU3 Vo2 0 Ve Qm"
+                    ],
+                    "off": [
+                        "XU3 Vo2 Vi- Ve Qm"
+                    ]
+                },
+                {
+                    "pinNum": 4,
+                    "on": [
+                        "R2 output N001",
+                        "R1 N001 0"
+                    ],
+                    "off": []
+                },
+                {
+                    "pinNum": 5,
+                    "on": [
+                        "Cm V01 V02"
+                    ],
+                    "off": []
+                },
+                {
+                    "pinNum": 6,
+                    "on": [
+                        "Vsig N002 0 0",
+                        "R10 N002 Vi+",
+                        "XU4 Vo1 Vi+ Ve Qm"
+                    ],
+                    "off": [
+                        "XU4 Vo1 0 Ve Qm"
+                    ]
+                },
+                {
+                    "pinNum": 7,
+                    "on": [
+                        "Rc2 N004 Vo2"
+                    ],
+                    "off": [
+                        "Rc2 Vcc Vo2"
+                    ]
+                },
+                {
+                    "pinNum": 8,
+                    "on": [
+                        "Rc1 N004 Vo1"
+                    ],
+                    "off": [
+                        "Rc1 Vcc Vo1"
+                    ]
+                },
+                {
+                    "pinNum": 9,
+                    "on": [
+                        "RB N004 Vb"
+                    ],
+                    "off": [
+                        "RB Vcc Vb"
+                    ]
+                },
+                {
+                    "pinNum": 10,
+                    "on": [
+                        "All of output stage"
+                    ],
+                    "off": [
+                    ]
+                },
+                {
+                    "pinNum": 11,
+                    "on": [
+                        "XU7 Vcc 0 DMM+"
+                    ],
+                    "off": [
+                    ]
+                },
+                {
+                    "pinNum": 12,
+                    "on": [
+                        "V1 Vcc 0 15",
+                        "V2 0 Vee 15"
+                    ],
+                    "off": []
+                }
+            ]
+        }
+    },
+    "PSUCondition": {
+        "V1": 10,
+        "V2": 0,
+        "A1": 0.1,
+        "A2": 0.1,
+        "buttonState": [
+            true,
+            false
+        ],
+        "netlist": [
+            ""
+        ]
+    }
+    
+}
