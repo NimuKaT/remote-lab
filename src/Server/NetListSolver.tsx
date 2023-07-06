@@ -66,6 +66,7 @@ export function netListSolver(refNetList: Array<string>, targetNetList: Array<st
 
     if (matchingIndexes.length === refComps.length) {
         // console.log('has enough matches')
+        // console.log(refNetList)
     } else {
         // console.log('not enough matches')
     }

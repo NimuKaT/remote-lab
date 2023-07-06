@@ -122,7 +122,7 @@
                 {
                     "pinNum": 5,
                     "on": [
-                        "Cm V01 V02"
+                        "Cm V01 V02 10p"
                     ],
                     "off": []
                 },
@@ -140,28 +140,28 @@
                 {
                     "pinNum": 7,
                     "on": [
-                        "Rc2 N004 Vo2"
+                        "Rc2 N004 Vo2 10k"
                     ],
                     "off": [
-                        "Rc2 Vcc Vo2"
+                        "Rc2 Vcc Vo2 10k"
                     ]
                 },
                 {
                     "pinNum": 8,
                     "on": [
-                        "Rc1 N004 Vo1"
+                        "Rc1 N004 Vo1 10k"
                     ],
                     "off": [
-                        "Rc1 Vcc Vo1"
+                        "Rc1 Vcc Vo1 10k"
                     ]
                 },
                 {
                     "pinNum": 9,
                     "on": [
-                        "RB N004 Vb"
+                        "RB N004 Vb 15k"
                     ],
                     "off": [
-                        "RB Vcc Vb"
+                        "RB Vcc Vb 15k"
                     ]
                 },
                 {

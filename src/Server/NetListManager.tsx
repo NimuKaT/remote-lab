@@ -123,21 +123,29 @@ export default class NetListManger {
                 newTarget.push("XU " + parts[7] + " " + parts[6] + " " + parts[8] + " Qn")
                 newTarget.push("XU " + parts[9] + " " + parts[10] + " " + parts[11] + " Qn")
                 newTarget.push("XU " + parts[14] + " " + parts[13] + " " + parts[12] + " Qn")
-            } else {
+            } else if (parts[1] === "Mch2+" || parts[1] === "Mch2-" || parts[1] === "Sig+") {
+
+            }
+            else {
                 newTarget.push(net)
             }
         })
-        console.log(newTarget)
+        // console.log(newTarget)
 
 
         let target = this.trimNetlist(newTarget)
-        // console.log(target)
-        this.netLists.every((ref) => {
-            let matched = netListSolver(ref.netList, target);
+        console.log(target)
+        this.netLists.every((ref, i) => {
+            let matched = 1;
+            // if (i === 5) {
+
+                matched = netListSolver(ref.netList, target);
+            // }
             if (matched === 0) {
-                // console.log("Found Matching netlist")
-                // console.log(ref.netList)
+                console.log("Found Matching netlist")
+                console.log(ref.netList)
                 pinconfig = ref.pinConfig;
+                console.log(ref.pinConfig)
                 return 0
             }
             return 1
