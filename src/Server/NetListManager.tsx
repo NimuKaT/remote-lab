@@ -137,8 +137,9 @@ export default class NetListManger {
         console.log(target)
         this.netLists.every((ref, i) => {
             let matched = 1;
-            // if (i === 5) {
-
+            // if (i === 549) {
+                // console.log("Attempting to match")
+                // console.log(ref.netList)
                 matched = netListSolver(ref.netList, target);
             // }
             if (matched === 0) {

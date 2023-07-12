@@ -94,7 +94,7 @@
                 {
                     "pinNum": 2,
                     "on": [
-                        "R9 Vi N001",
+                        "R9 Vi- N001",
                         "R1 N001 0"
                     ],
                     "off": [
@@ -129,8 +129,8 @@
                 {
                     "pinNum": 6,
                     "on": [
-                        "Vsig N002 0 0",
-                        "R10 N002 Vi+",
+                        "Vsig input 0 0",
+                        "R10 input Vi+ 1k",
                         "XU4 Vo1 Vi+ Ve Qm"
                     ],
                     "off": [
@@ -167,7 +167,11 @@
                 {
                     "pinNum": 10,
                     "on": [
-                        "All of output stage"
+                        "R3 Inv output 22k",
+                        "R4 Vo1 Inv 22k",
+                        "R5 Vo2 nInv 33k",
+                        "R6 nInv 0 33k",
+                        "U13 NC1 Inv nInv Vee NC2 output Vcc NC3 LM741"
                     ],
                     "off": [
                     ]
