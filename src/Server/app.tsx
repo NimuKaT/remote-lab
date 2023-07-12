@@ -51,6 +51,7 @@ app.get('/api/netlist', (req, res, next) => {
 app.post('/api/runNetlist', (req, res, next) => {
     // console.log("Received netlist")
     let netlist = req.body as Array<string>
+    prevNetList = netlist;
     // console.log(netlist);
     let pinconfig = netlistmanager.compareNetlist(netlist);
     
@@ -108,6 +109,7 @@ let rl = readline.createInterface({input: process.stdin, output: process.stdout}
 let labspec: LabSpec;
 let netlistmanager: NetListManger = new NetListManger();
 let oscillo: string = "";
+let prevNetList: Array<string> = [];
 fs.readFile("./bin/dist/config.json", 'utf-8').then((data) => {
     oscillo = JSON.parse(data)?.Oscilloscope;
 })
@@ -153,20 +155,32 @@ function readCommand(answer: string) {
     let values: Array<string> = answer.split(" ")
     let flag = false;
     let printNets = true;
+    let command = values[0].toLocaleLowerCase()
     if (values.length === 1) {
-        if (values[0].toLocaleLowerCase() === 'list') {
+        if (command === 'list') {
             console.log(netlistmanager.netLists)
             printNets = false
         }
-        else if (values[0] === '?') {
+        else if (command === '?') {
             rl.write("Command List:\n\tlist \t - lists the current valid netlists\n\tchange (switch number) (switch state) - prepares to change the net list for the specified switch and swicth state\n")
             printNets = false;
         }
-        else if (values[0].toLocaleLowerCase() === 'q') {
+        else if (command === 'q') {
             exit(0);
         }
-        else if (values[0] === "state") {
+        else if (command === "state") {
             printPinState();
+            printNets = false
+        }
+    }
+    if (values.length === 2) {
+        
+        if (command === "net") {
+            console.log(netlistmanager.printNetlist(parseInt(values[1])))
+            printNets = false
+        }
+        else if (command === "pin") {
+            console.log(netlistmanager.printNetlist(parseInt(values[1])))
             printNets = false
         }
     }

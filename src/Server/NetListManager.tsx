@@ -220,6 +220,14 @@ export default class NetListManger {
         }
         
     }
+
+    printNetlist(netListNumber: number) {
+        return this.netLists[netListNumber].netList 
+    }
+
+    printPin(netListNumber: number) {
+        return this.netLists[netListNumber].pinConfig.digital;
+    }
 }
 
 type netListMap = {

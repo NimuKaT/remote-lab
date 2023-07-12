@@ -70,7 +70,7 @@ export function netListSolver(refNetList: Array<string>, targetNetList: Array<st
     } else {
         // console.log('not enough matches')
     }
-    console.log(matchingIndexes)
+    // console.log(matchingIndexes)
     // console.log(refComps)
     // console.log(targetComps)
 
@@ -150,9 +150,9 @@ function testCompMatch(refComps: Array<component>, targetComps: Array<component>
     let isReversed = false
     // console.log(refNets)
 
-    console.log("Ref Comp number: %d", currComp);
-    console.log("testIndexes: ", testIndexes);
-    console.log("testIndexes.length: %d", testIndexes.length);
+    // console.log("Ref Comp number: %d", currComp);
+    // console.log("testIndexes: ", testIndexes);
+    // console.log("testIndexes.length: %d", testIndexes.length);
     
 
     while (testC < testIndexes.length) {
@@ -182,10 +182,10 @@ function testCompMatch(refComps: Array<component>, targetComps: Array<component>
         for (let i = 0; i < refNets.length; i++) {
             let refMapping = cfMap[refNets[i]];
             let targetMapping = cbMap[targetNets[i]]
-            console.log(refComps[currComp].instName)
-            console.log("current Ref node: %d, current target node: %d", refNets[i], targetNets[i])
-            console.log(cfMap)
-            console.log(cbMap)
+            // console.log(refComps[currComp].instName)
+            // console.log("current Ref node: %d, current target node: %d", refNets[i], targetNets[i])
+            // console.log(cfMap)
+            // console.log(cbMap)
             
             if (refMapping === -1 && targetMapping === -1) {
                 // If true the relative nodes have no mapping and is a possible correct mapping
@@ -260,7 +260,7 @@ function testCompMatch(refComps: Array<component>, targetComps: Array<component>
                             testI = -1;
                         }
                         else {
-                            console.log("failed due to target defeinition, try next comp")
+                            // console.log("failed due to target defeinition, try next comp")
                             // console.log(refNets)
                             // console.log(targetNets);
                             // console.log(refComps[currComp])
@@ -274,7 +274,7 @@ function testCompMatch(refComps: Array<component>, targetComps: Array<component>
                     }
                     else {
                         if (refComps[currComp].reversable && !isReversed) {
-                            console.log("Attempting reverse")
+                            // console.log("Attempting reverse")
                             isReversed = true;
                             testI = -1;
                         }
@@ -292,8 +292,8 @@ function testCompMatch(refComps: Array<component>, targetComps: Array<component>
             // if it fails with a change made by the current component try the next one
             // if its fails with a change made by another component return the node number
 
-            console.log("Guessing %d matches %d", currComp, testI)
-            console.log("%s, %s wiht %s", refComps[currComp].instName, targetComps[testI].instName, targetComps[testI].value)
+            // console.log("Guessing %d matches %d", currComp, testI)
+            // console.log("%s, %s wiht %s", refComps[currComp].instName, targetComps[testI].instName, targetComps[testI].value)
             targetCompMapped[testI] = currComp;
             let status: number = testCompMatch(refComps, targetComps, matchedIndex, cfMap, cbMap, targetCompMapped, currComp+1);
             if (changes.has(status) || status < 0) {
