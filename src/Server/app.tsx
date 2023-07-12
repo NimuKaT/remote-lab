@@ -180,7 +180,7 @@ function readCommand(answer: string) {
             printNets = false
         }
         else if (command === "pin") {
-            console.log(netlistmanager.printNetlist(parseInt(values[1])))
+            console.log(netlistmanager.printPin(parseInt(values[1])))
             printNets = false
         }
     }
