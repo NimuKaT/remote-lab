@@ -3,6 +3,7 @@ import React from "react";
 import { CollisionBox } from "../../Spice/CollisionBox";
 import BBNode from "./BBNode"
 import BBWireObj from "./BBWireObj";
+import { log } from "console";
 
 export default class BBWire {
     deleted: boolean = false
@@ -131,6 +132,8 @@ export default class BBWire {
         let ly = -y1;
         let hx = x2;
         let hy = -y2;
+        // console.log(lx, hx, ly, hy)
+        // console.log(pos)
         if (lx > hx) {
             lx = hx;
             hx = x1;
@@ -160,8 +163,32 @@ export default class BBWire {
                     flag = true
                     this.isSelected = true
                 }
+            } else if (ly === hy) {
+            // console.log("Same y");
+            // console.log(ly - 8, pos.y, hy + 8)
+            if (ly - 8 <= pos.y && pos.y <= hy + 8) {
+                // console.log("in y range")
+                // console.log(lx, pos.x , hx);
+                
+                if (lx <= pos.x && pos.x <= hx) {
+                // console.log("in x range")
+                    flag = true
+                    this.isSelected = true
+                }
             }
         }
+        } else if (lx === hx) {
+            // console.log("Same x");
+            
+            if (lx - 8 <= pos.x && pos.x <= hx +8) {
+                // console.log("in x range")
+                if (ly <= pos.y && pos.y <= hy) {
+                // console.log("in y range")
+                    flag = true
+                    this.isSelected = true
+                }
+            }
+        } 
         return flag
         
     }
