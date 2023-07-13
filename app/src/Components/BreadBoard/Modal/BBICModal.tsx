@@ -9,7 +9,8 @@ type BBICModalP = {
 
 type BBICModalS = {
     value: string,
-    result: Array<{name: string, pin: number}>
+    result: Array<{name: string, pin: number}>,
+    first: boolean
 }
 
 export default class BBICModal extends React.Component<BBICModalP,BBICModalS> {
@@ -19,21 +20,27 @@ export default class BBICModal extends React.Component<BBICModalP,BBICModalS> {
         super(P, S);
         this.state = {
             value: '',
-            result: []
+            result: [],
+            first: true
         }
     }
 
     onChange(evt: React.ChangeEvent<HTMLInputElement>) {
-        this.setState({
-            value: evt.target.value,
-            result: this.compSerach.findIC(evt.target.value.toUpperCase())
-        })
+        if (this.state.first) {
+            this.setState({first: false})
+        } else {
+
+            this.setState({
+                value: evt.target.value,
+                result: this.compSerach.findIC(evt.target.value.toUpperCase())
+            })
+        }
     }
 
     render() {
         return <>
         <DialogTitle>
-            <TextField value={this.state.value} onChange={this.onChange.bind(this)} placeholder={"Enter name of IC component. E.g. LM301"} sx={{minWidth: 350}}/>
+            <TextField value={this.state.value} onChange={this.onChange.bind(this)} placeholder={"Enter name of IC component. E.g. LM301"} sx={{minWidth: 350}} autoFocus/>
         </DialogTitle>
         {this.state.value === '' ? <></> :
         <DialogContent dividers>

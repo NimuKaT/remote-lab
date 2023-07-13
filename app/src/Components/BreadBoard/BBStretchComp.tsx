@@ -263,17 +263,24 @@ export default class BBStretchComp {
         let ly = this.relRect.ly;
         let hy = this.relRect.hy;
 
+        // console.log(pos);
+        // console.log(mx, my)
+        // console.log(lx, hx, ly, hy);
+        
+
         // if (lx <= pos.x && pos.x <= hx) {
         //     if (ly <= pos.y && pos.y <= hy) {
                 let dx = x2 - x1;
                 let dy = -(y2 - y1);
-                let c = - dy*x1 - dx*y1;
-                let d = Math.abs(dy*pos.x - dx*pos.y + c) / Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
-                let mc = - dx*mx + dy*my;
+                let c =  dy*mx - dx*my;
+                let d = Math.abs(- dy*pos.x + dx*pos.y + c) / Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+
+                let mc = - (dx*mx + dy*my);
                 let md = Math.abs(dx*pos.x + dy*pos.y + mc) / Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
-                console.log("Distance: " + d + " Distance: " + md);
-                if (d <= 5 && md <= Math.sqrt(Math.pow(x1-x2,2) + Math.pow(y1-y2,2))) {
-                    console.log("Select");
+                // console.log("Main gradient: " + Math.atan2(dy,dx)/Math.PI*180 + "Second gradient: " + Math.atan2(-dy, dx)/Math.PI*180)
+                // console.log("Distance: " + d + " Distance: " + md);
+                if (d <= hx-lx && md <= hy-ly) {
+                    // console.log("Select");
                     
                     flag = true
                     this.isSelected = true

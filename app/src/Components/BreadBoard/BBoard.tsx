@@ -647,15 +647,15 @@ export default class BBoard {
             }
             return !flag
         })
-        // if (!this.hasSelected()) {
-        //     this.stretchComp.every((comp) => {
-        //         let flag = comp.isHover(pos)
-        //         if (flag) {
-        //             this.selectedStretch.push(comp)
-        //             this.foreceUpdate()
-        //         }
-        //         return !flag;
-        //     })
+        if (!this.hasSelected()) {
+            this.stretchComp.every((comp) => {
+                let flag = comp.isHover(pos)
+                if (flag) {
+                    this.selectedStretch.push(comp)
+                    this.foreceUpdate()
+                }
+                return !flag;
+            })
                 if (!this.hasSelected()) {
                     this.ic.every((comp) => {
                         let flag = comp.isHover(pos);
@@ -666,6 +666,6 @@ export default class BBoard {
                         return !flag
                     })
                 }
-        // }
+        }
     }
 }

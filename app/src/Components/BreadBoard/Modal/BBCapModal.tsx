@@ -9,7 +9,8 @@ type BBCapModalP = {
 
 type BBCapModalS = {
     value: string,
-    result: Array<string>
+    result: Array<string>,
+    first: boolean
 }
 
 export default class BBCapModal extends React.Component<BBCapModalP,BBCapModalS> {
@@ -19,21 +20,26 @@ export default class BBCapModal extends React.Component<BBCapModalP,BBCapModalS>
         super(P, S);
         this.state = {
             value: '',
-            result: []
+            result: [],
+            first: true
         }
     }
 
     onChange(evt: React.ChangeEvent<HTMLInputElement>) {
-        this.setState({
-            value: evt.target.value,
-            result: this.compSerach.findCap(evt.target.value)
-        })
+        if (this.state.first) {
+            this.setState({first: false})
+        } else {
+            this.setState({
+                value: evt.target.value,
+                result: this.compSerach.findCap(evt.target.value)
+            })
+        }
     }
 
     render() {
         return <>
         <DialogTitle>
-            <TextField value={this.state.value} onChange={this.onChange.bind(this)} placeholder={"Enter capacitor value. E.g. 4.7u"} sx={{minWidth: 250}}/>
+            <TextField value={this.state.value} onChange={this.onChange.bind(this)} placeholder={"Enter capacitor value. E.g. 4.7u"} sx={{minWidth: 250}} autoFocus/>
         </DialogTitle>
         {this.state.value === '' ? <></> :
         <DialogContent dividers>

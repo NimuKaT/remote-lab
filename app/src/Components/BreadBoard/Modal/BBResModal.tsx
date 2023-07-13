@@ -10,7 +10,8 @@ type BBResModalP = {
 
 type BBResModalS = {
     value: string,
-    result: Array<BBResItem>
+    result: Array<BBResItem>,
+    first: boolean
 }
 
 export default class BBResModal extends React.Component<BBResModalP,BBResModalS> {
@@ -20,21 +21,32 @@ export default class BBResModal extends React.Component<BBResModalP,BBResModalS>
         super(P, S);
         this.state = {
             value: '',
-            result: [{value: '4.7', tolerance:'5%',band:4}, {value:'4.7k', tolerance:'5%',band:4}]
+            result: [{value: '4.7', tolerance:'5%',band:4}, {value:'4.7k', tolerance:'5%',band:4}],
+            first: true
         }
     }
 
     onChange(evt: React.ChangeEvent<HTMLInputElement>) {
-        this.setState({
-            value: evt.target.value,
-            result: this.compSerach.findRes(evt.target.value)
-        })
+        if (this.state.first) {
+            this.setState({
+                first: false
+            })
+        } else {
+            this.setState({
+                value: evt.target.value,
+                result: this.compSerach.findRes(evt.target.value)
+            })
+        }
+    }
+
+    componentDidMount(): void {
+        
     }
 
     render() {
         return <>
         <DialogTitle>
-            <TextField value={this.state.value} onChange={this.onChange.bind(this)} placeholder={"Enter resistor value. E.g. 4.7k"} sx={{minWidth: 250}}/>
+                <TextField value={this.state.value} onChange={this.onChange.bind(this)} placeholder={"Enter resistor value. E.g. 4.7k"} sx={{minWidth: 250}} autoFocus/>
         </DialogTitle>
         {this.state.value === '' ? <></> :
         <DialogContent dividers>
