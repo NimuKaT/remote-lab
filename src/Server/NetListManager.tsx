@@ -228,6 +228,14 @@ export default class NetListManger {
     printPin(netListNumber: number) {
         return this.netLists[netListNumber].pinConfig.digital;
     }
+
+    getPowerPins() : Array<number> | undefined {
+        return this.labspec?.power.digital;
+    }
+
+    getSignalPins() : Array<number> | undefined {
+        return this.labspec?.signal.digital;
+    }
 }
 
 type netListMap = {

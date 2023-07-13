@@ -58,24 +58,53 @@ app.post('/api/runNetlist', (req, res, next) => {
     if (pinconfig.digital.length > 0) {
     // HARD CODE EXECUTE SEQUENCE
     
-    prevPin.digital[0][0] = false
+    netlistmanager.getSignalPins()?.forEach((pin) => {
+        prevPin.digital[Math.floor((pin-1)/8)][(pin-1) % 8] = false
+    })
+    // prevPin.digital[0][0] = false
     niusb.writeToDevice(prevPin, ()=> {
-    prevPin.digital[1][3] = false
+        netlistmanager.getPowerPins()?.forEach((pin) => {
+            prevPin.digital[Math.floor((pin-1)/8)][(pin-1) % 8] = false
+        })
+    // prevPin.digital[1][3] = false
     niusb.writeToDevice(prevPin, () => {
-    pinconfig.digital[0][0] = false
-    pinconfig.digital[1][3] = false
+        pinconfig.digital.forEach((pinSet, i) => {
+            pinSet.forEach((pin, j) => {
+                prevPin.digital[i][j] = pin 
+            })
+        })
+        netlistmanager.getSignalPins()?.forEach((pin) => {
+            prevPin.digital[Math.floor((pin-1)/8)][(pin-1) % 8] = false
+        })
+        netlistmanager.getPowerPins()?.forEach((pin) => {
+            prevPin.digital[Math.floor((pin-1)/8)][(pin-1) % 8] = false
+        })
+    // pinconfig.digital[0][0] = false
+    // pinconfig.digital[1][3] = false
     niusb.writeToDevice(pinconfig, () => {
-    pinconfig.digital[1][3] = true
+        netlistmanager.getPowerPins()?.forEach((pin) => {
+            prevPin.digital[Math.floor((pin-1)/8)][(pin-1) % 8] = pinconfig.digital[Math.floor((pin-1)/8)][(pin-1)%8]
+        })
+    // pinconfig.digital[1][3] = true
     niusb.writeToDevice(pinconfig, () => {
-    pinconfig.digital[0][0] = true
+        netlistmanager.getSignalPins()?.forEach((pin) => {
+            prevPin.digital[Math.floor((pin-1)/8)][(pin-1) % 8] = pinconfig.digital[Math.floor((pin-1)/8)][(pin-1)%8]
+        })
+    // pinconfig.digital[0][0] = true
     niusb.writeToDevice(pinconfig)}) }) }) 
     prevPin = pinconfig
     })
     res.send("ok")
     } else {
-        prevPin.digital[0][0] = false
+        netlistmanager.getSignalPins()?.forEach((pin) => {
+            prevPin.digital[Math.floor((pin-1)/8)][(pin-1) % 8] = false
+        })
+        // prevPin.digital[0][0] = false
         niusb.writeToDevice(prevPin, ()=> {
-        prevPin.digital[1][3] = false
+        netlistmanager.getPowerPins()?.forEach((pin) => {
+            prevPin.digital[Math.floor((pin-1)/8)][(pin-1) % 8] = false
+        })
+        // prevPin.digital[1][3] = false
         niusb.writeToDevice(prevPin)})
         res.send("fail")
     }
