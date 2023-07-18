@@ -486,7 +486,7 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
                     onMouseMove={this.onMouseMove.bind(this)}
                     onMouseUp={this.onMouseUp.bind(this)}
                 >
-                    <Layer x={120} y={120}>
+                    <Layer x={120} y ={120} z={-2}>
                         <MultiMeter x={-450} y={-250}/>
                         <PowerSupply callback={this.setPSU.bind(this)} x={-50} y={-250}/>
                         <FunctionGenerator x={300} y={-250}/>
@@ -501,8 +501,6 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
                         <Line points={[378, 298, 654, 298]} stroke={"#5533cc"} strokeWidth={3}/>
                         <Line points={[378, 302, 654, 302]} stroke={"#cc3355"} strokeWidth={3}/>
                         <Line points={[42, 298, 318, 298]} stroke={"#5533cc"} strokeWidth={3}/>
-                        <Line points={[42, 302, 318, 302]} stroke={"#cc3355"} strokeWidth={3}/>
-
                         {this.state.board.getNodes().map((node, index) => {
                             return <BBNodeObj key={index} node={node}/>
                         })}
@@ -510,7 +508,11 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
                             return <Text key={index} x={lable.pos.x} y={lable.pos.y} text={lable.text}
                             fontSize={18} width={24} align={"center"}/>
                         })}
-                        {this.state.board.getWires().map((wire) => {
+                        <Line points={[42, 302, 318, 302]} stroke={"#cc3355"} strokeWidth={3}/>
+ 
+                    </Layer>
+                    <Layer x={120} y={120}>
+                       {this.state.board.getWires().map((wire) => {
                             return <BBWireObj wire={wire}/>
                         })}
                         {this.state.board.getIC().map((ic) => {
