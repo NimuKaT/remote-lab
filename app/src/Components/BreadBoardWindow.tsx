@@ -225,6 +225,18 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
                     toolName: 'Capacitor'
                 })
             }
+        } else if (toolName === 'Diode') {
+            let tool: BBTools | undefined = this.state.tools.get("PlaceStretch");
+            if (tool instanceof BBPlaceStretch) {
+                let placeStretch: BBPlaceStretch = tool;
+                placeStretch.setComponent('diode', 'diode');
+                this.state.currTool?.onToolChange(tool);
+                tool.onInitialise();
+                this.setState({
+                    currTool: tool,
+                    toolName: 'Diode'
+                })
+            }
         } else if (toolName === 'IC') {
             this.state.currTool?.onInitialise();
             let tool: BBTools| undefined = this.state.tools.get("PlaceStatic");
@@ -315,7 +327,7 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
 
 
         } else if (toolName === 'Stop') {
-            this.state.currTool?.onToolChange(this.state.currTool)
+            // this.state.currTool?.onToolChange(this.state.currTool)
             this.stopSim()
         } else if (toolName === 'Save') {
             let comps = this.state.board.getComponents();
@@ -326,7 +338,7 @@ export default class BreadBoardWindow extends React.Component<BBWindowP, BBWindo
             localStorage.setItem("BreadBoard", JSON.stringify(comps))
             let element = document.createElement('a');
             element.setAttribute('href', 'data:text/plain;charset=utf-8,' + 
-                encodeURIComponent(JSON.stringify(this.state.board.getComponents())))
+                encodeURIComponent(JSON.stringify(this.state.board.getComponents(), null, '\t')))
             element.setAttribute('download', 'schematic.bbsc')
             element.style.display = 'none';
             document.body.appendChild(element);

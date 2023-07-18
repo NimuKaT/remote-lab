@@ -47,6 +47,23 @@ export default class BBStretchCompRef {
         anchor.push({x:0, y:5})
         this.symbols.set('cap', symbol)
         this.anchors.set('cap', anchor)
+
+        // Diode
+        anchor = [];
+        symbol = {
+            lines: [],
+            rects: [],
+            arcs: [],
+            circles: [],
+        }
+        symbol.lines.push({points:[-10,10,10,10]})
+        symbol.lines.push({points:[0,10,10,-10]})
+        symbol.lines.push({points:[0,10,-10,-10]})
+        symbol.lines.push({points:[-10,-10,10,-10]})
+        anchor.push({x:0, y:-10})
+        anchor.push({x:0, y:10})
+        this.symbols.set('diode', symbol)
+        this.anchors.set('diode', anchor)
     }
 
     getSymbol(name: string): BBSymbol {

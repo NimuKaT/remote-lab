@@ -17,6 +17,8 @@ export default class BBSelect extends BBTools {
     }
 
     onMouseMove(evt: KonvaEventObject<MouseEvent>): void {
+        let dt = Date.now() - this.lastMovement
+        if (dt >= this.period) {
         if (this.isSelecting) {
         this.board.deselect()
             let pos = this.getPointerPos();
@@ -39,6 +41,13 @@ export default class BBSelect extends BBTools {
             }
             this.board.foreceUpdate();
             
+        }
+            this.timeout = -1;
+            this.lastMovement = Date.now();
+        } else {
+            if (this.timeout <= 0) {
+                this.timeout = setTimeout(this.onMouseMove.bind(this, evt), this.period - dt) as unknown as number;
+            } 
         }
    }
 
@@ -73,6 +82,9 @@ export default class BBSelect extends BBTools {
     }
 
     onToolChange(newTool: BBTools): void {
+        if (this.timeout > 0) {
+            clearTimeout(this.timeout)
+        }
         this.isSelecting = false;
         this.hasMoved = false;
         this.board.deselect()

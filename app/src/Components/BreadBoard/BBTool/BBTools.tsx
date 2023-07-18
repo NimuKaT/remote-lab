@@ -17,6 +17,9 @@ export default abstract class BBTools {
     lastEvt?: KonvaEventObject<MouseEvent>;
     moveInterval: number = 10;
     gotModalResponse: boolean = true
+    lastMovement: number = Date.now();
+    timeout: number = -1;
+    period: number = 13;
 
     constructor(board: BBoard, stageRef: React.RefObject<Stage>) {
         this.stageRef = stageRef;

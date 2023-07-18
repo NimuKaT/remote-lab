@@ -22,6 +22,9 @@ export default class BBWireTool extends BBTools {
     }
 
     onToolChange(newTool: BBTools): void {
+        if (this.timeout > 0) {
+            clearTimeout(this.timeout)
+        }
         this.board.deleteComponents()
         
     }
@@ -75,6 +78,8 @@ export default class BBWireTool extends BBTools {
     }
 
     onMouseMove(evt: KonvaEventObject<MouseEvent>): void {
+        let dt = Date.now() - this.lastMovement
+        if (dt >= this.period) {
         if (!this.isFirstnode && (Date.now() - this.lastMoved > this.moveInterval)) {
             this.lastMoved = Date.now()
             let pos = this.getPointerPos();
@@ -95,6 +100,13 @@ export default class BBWireTool extends BBTools {
                 }
                 this.board.foreceUpdate();
             }
+        }
+            this.timeout = -1;
+            this.lastMovement = Date.now();
+        } else {
+            if (this.timeout <= 0) {
+                this.timeout = setTimeout(this.onMouseMove.bind(this, evt), this.period - dt) as unknown as number;
+            } 
         }
         
     }

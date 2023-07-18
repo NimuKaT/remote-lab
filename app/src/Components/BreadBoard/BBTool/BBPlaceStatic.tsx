@@ -53,6 +53,8 @@ export default class BBPlaceStatic extends BBTools {
     }
 
     onMouseMove(evt: KonvaEventObject<MouseEvent>): void {
+        let dt = Date.now() - this.lastMovement
+        if (dt >= this.period) {
         let pos = this.getPointerPos();
         let delta = this.getDelta(pos);
         this.board.moveComponents(delta);
@@ -60,6 +62,13 @@ export default class BBPlaceStatic extends BBTools {
         // console.log("On Move");
         // console.log(pos);
         // console.log(delta);
+            this.timeout = -1;
+            this.lastMovement = Date.now();
+        } else {
+            if (this.timeout <= 0) {
+                this.timeout = setTimeout(this.onMouseMove.bind(this, evt), this.period - dt) as unknown as number;
+            } 
+        }
     }
 
     onMouseUp(evt: KonvaEventObject<MouseEvent>): void {
@@ -74,6 +83,9 @@ export default class BBPlaceStatic extends BBTools {
     }
 
     onToolChange(newTool: BBTools): void {
+        if (this.timeout > 0) {
+            clearTimeout(this.timeout)
+        }
         this.board.deleteComponents()
     }
 

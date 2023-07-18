@@ -181,6 +181,7 @@ export default class BBCompSearch {
         this.icItems.set("LM741", 8)
         this.icItems.set("LM348", 14)
         this.icItems.set("CA3083", 16)
+        this.icItems.set("POT", 4)
     }
 
     findRes(val: string) {

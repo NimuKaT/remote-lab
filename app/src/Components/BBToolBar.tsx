@@ -107,6 +107,25 @@ export default class BBToolBar extends React.Component<BBToolBarP, BBToolBarS> {
                 </Box>
                 <Box>
                     <Stack direction={'column'} justifyContent={'center'} alignItems={'center'}>
+                    <Button variant={this.props.activeTool === "Diode"? 'contained' : 'outlined'}
+                        onClick={this.props.setTool.bind(null, "Diode")}
+                    >
+                        {/* <ZoomOut sx={{flexGrow: 1}}/> */}
+                        <SvgIcon>
+                            <path d="M0 11 v2h8v-2 Z"/>
+                            <path d="M16 11 v2h10v-2 Z"/>
+                            <path d="M10 4 h-2v16h2 Z"/>
+                            <path d="M8 3 L 18 11 L 18 13 L 8 5 Z"/>
+                            <path d="M8 19 L 18 11 L 18 13 L 8 21 Z"/>
+                            <path d="M18 6 h-2v12h2 Z"/>
+                        </SvgIcon>
+                    </Button>
+                    <Typography>Diode</Typography>
+                    <Typography fontSize={12}></Typography>
+                    </Stack>
+                </Box>
+                <Box>
+                    <Stack direction={'column'} justifyContent={'center'} alignItems={'center'}>
                     <Button variant={this.props.activeTool === "IC"? 'contained' : 'outlined'}
                         onClick={this.props.setTool.bind(null, "IC")}
                     >

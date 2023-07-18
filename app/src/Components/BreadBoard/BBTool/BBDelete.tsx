@@ -17,36 +17,45 @@ export default class BBDelete extends BBTools {
     }
 
     onMouseMove(evt: KonvaEventObject<MouseEvent>): void {
-        let pos = this.getPointerPos();
-        if (this.isSelecting) {
-            this.board.deselect()
-            if (Math.sqrt(Math.pow(this.mouseRef.x - pos.x, 2) + Math.pow(this.mouseRef.y - pos.y,2)) >= this.moveThreshold) {
-                this.hasMoved = true
-            }
-            if (this.hasMoved) {
+        let dt = Date.now() - this.lastMovement
+        if (dt >= this.period) {
+            let pos = this.getPointerPos();
+            if (this.isSelecting) {
+                this.board.deselect()
+                if (Math.sqrt(Math.pow(this.mouseRef.x - pos.x, 2) + Math.pow(this.mouseRef.y - pos.y,2)) >= this.moveThreshold) {
+                    this.hasMoved = true
+                }
+                if (this.hasMoved) {
 
-                let pos = this.getPointerPos();
-                let x = this.mouseRef.x;
-                let y = this.mouseRef.y;
-                let w = Math.abs(x - pos.x)
-                let h = Math.abs(y - pos.y)
-                if (x > pos.x) {
-                    x = pos.x
+                    let pos = this.getPointerPos();
+                    let x = this.mouseRef.x;
+                    let y = this.mouseRef.y;
+                    let w = Math.abs(x - pos.x)
+                    let h = Math.abs(y - pos.y)
+                    if (x > pos.x) {
+                        x = pos.x
+                    }
+                    if (y > pos.y) {
+                        y = pos.y
+                    }
+                    this.board.select(x, y, w, h);
+                } else {
+                    this.board.deselect()
+                    this.board.hover(pos)
                 }
-                if (y > pos.y) {
-                    y = pos.y
-                }
-                this.board.select(x, y, w, h);
-            }else {
+                this.board.foreceUpdate();
+            
+            } else {
                 this.board.deselect()
                 this.board.hover(pos)
+                this.board.foreceUpdate()
             }
-            this.board.foreceUpdate();
-            
+            this.timeout = -1;
+            this.lastMovement = Date.now();
         } else {
-            this.board.deselect()
-            this.board.hover(pos)
-            this.board.foreceUpdate()
+            if (this.timeout <= 0) {
+                this.timeout = setTimeout(this.onMouseMove.bind(this, evt), this.period - dt) as unknown as number;
+            } 
         }
    }
 
@@ -86,6 +95,9 @@ export default class BBDelete extends BBTools {
     }
 
     onToolChange(newTool: BBTools): void {
+        if (this.timeout > 0) {
+            clearTimeout(this.timeout)
+        }
         this.isSelecting = false;
         this.hasMoved = false;
         this.board.deselect()

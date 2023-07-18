@@ -183,6 +183,7 @@ export default class BBStretchComp {
     }
 
     delete() {
+        console.log("Deleteing %s %s",this.type, this.value)
         this.isDeleted = true
     }
 
@@ -208,7 +209,7 @@ export default class BBStretchComp {
 
     getNetlist(): {prefix: string, nodes: Array<Vector2d>, value: string} {
         // Fix later
-        return {prefix: this.type === 'res' ? "R" : "C", nodes: [{x:this.nodes[0].getLocalX(), y:this.nodes[0].getLocalY()},
+        return {prefix: this.type === 'res' ? "R" : (this.type === 'cap'? 'C' : 'D'), nodes: [{x:this.nodes[0].getLocalX(), y:this.nodes[0].getLocalY()},
             {x:this.nodes[1].getLocalX(), y:this.nodes[1].getLocalY()}], value: this.value}
     }
 

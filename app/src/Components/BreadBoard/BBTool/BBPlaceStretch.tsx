@@ -20,6 +20,14 @@ export default class BBPlaceStretch extends BBTools {
             this.board.openModal({hideBackdrop: true}, <BBCapModal closeFunc={this.board.getModalClose()} setFunc={this.setValue.bind(this)}/>,
                 this.board.checkModalResponse.bind(this.board))
         }
+        else if (this.compType === 'diode') {
+            this.value = "diode"        // Temp
+        let pos = this.getPointerPos()
+        pos = this.snap(pos)
+            this.board.createNewStretchComp(this.compType, pos, this.value)
+            this.mouseRef.x = pos.x
+            this.mouseRef.y = pos.y
+        }
         this.firstNode = true
     }
 
@@ -59,22 +67,30 @@ export default class BBPlaceStretch extends BBTools {
     }
 
     onMouseMove(evt: KonvaEventObject<MouseEvent>): void {
-        let pos = this.getPointerPos()
-        pos = this.snap(pos)
-        let delta = this.getDelta(pos)
-        // console.log("Delta x: " + delta.x + " y: " + delta.y);
-        // console.log("Pos x: " + pos.x + " y: " + pos.y);
-        // console.log("MouseRef x: " + this.mouseRef.x + " Y: " + this.mouseRef.y)
+        let dt = Date.now() - this.lastMovement
+        if (dt >= this.period) {
+            let pos = this.getPointerPos()
+            pos = this.snap(pos)
+            let delta = this.getDelta(pos)
+            // console.log("Delta x: " + delta.x + " y: " + delta.y);
+            // console.log("Pos x: " + pos.x + " y: " + pos.y);
+            // console.log("MouseRef x: " + this.mouseRef.x + " Y: " + this.mouseRef.y)
         
-        if (this.firstNode) {
-
-            this.board.moveComponents(delta)
+            if (this.firstNode) {
+                this.board.moveComponents(delta)
+            }
+            else {
+                this.board.moveComponents({x:0,y:0})
+                this.board.placeStretchEnd(pos, 1)
+            }
+            this.board.foreceUpdate()
+            this.timeout = -1;
+            this.lastMovement = Date.now();
+        } else {
+            if (this.timeout <= 0) {
+                this.timeout = setTimeout(this.onMouseMove.bind(this, evt), this.period - dt) as unknown as number;
+            } 
         }
-        else {
-            this.board.moveComponents({x:0,y:0})
-            this.board.placeStretchEnd(pos, 1)
-        }
-        this.board.foreceUpdate()
     }
     
     onMouseUp(evt: KonvaEventObject<MouseEvent>): void {
@@ -89,6 +105,9 @@ export default class BBPlaceStretch extends BBTools {
     }
 
     onToolChange(newTool: BBTools): void {
+        if (this.timeout > 0) {
+            clearTimeout(this.timeout)
+        }
         this.board.deleteComponents()
     }
 
