@@ -92,13 +92,14 @@
                         "Rf2 N002 output 1k"
                     ],
                     "off": [
-                        "Rf1 N002 output 50k"
+                        "Rf1 N002 output 56k"
                     ]
                 },
                 {
                     "pinNum": 3,
                     "on": [
-                        "Cc1 N001 N004 30p"
+                        "Cc11 N001 N004 15p",
+                        "Cc12 N001 N004 15p"
                     ],
                     "off": []
                 },
@@ -140,5 +141,4 @@
             ""
         ]
     }
-    
 }

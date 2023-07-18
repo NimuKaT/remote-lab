@@ -58,7 +58,7 @@ export default class NetListManger {
                 // LAB 2 ONLY
                 if (pin === 1 && !digtialPins[pin] && (i & (1 << (index+1))) > 0) {
                     // Skip
-                    console.log("skipping pin 2 and 3")
+                    // console.log("skipping pin 2 and 3")
                 } else{
 
 
