@@ -81,17 +81,17 @@ app.post('/api/runNetlist', (req, res, next) => {
         })
     // pinconfig.digital[0][0] = false
     // pinconfig.digital[1][3] = false
-    niusb.writeToDevice(pinconfig, () => {
+    niusb.writeToDevice(prevPin, () => {
         netlistmanager.getPowerPins()?.forEach((pin) => {
-            prevPin.digital[Math.floor((pin-1)/8)][(pin-1) % 8] = pinconfig.digital[Math.floor((pin-1)/8)][(pin-1)%8]
+            prevPin.digital[Math.floor((pin-1)/8)][(pin-1) % 8] = true
         })
     // pinconfig.digital[1][3] = true
-    niusb.writeToDevice(pinconfig, () => {
+    niusb.writeToDevice(prevPin, () => {
         netlistmanager.getSignalPins()?.forEach((pin) => {
             prevPin.digital[Math.floor((pin-1)/8)][(pin-1) % 8] = pinconfig.digital[Math.floor((pin-1)/8)][(pin-1)%8]
         })
     // pinconfig.digital[0][0] = true
-    niusb.writeToDevice(pinconfig)}) }) }) 
+    niusb.writeToDevice(prevPin)}) }) }) 
     prevPin = pinconfig
     })
     res.send("ok")
@@ -113,13 +113,20 @@ app.post('/api/runNetlist', (req, res, next) => {
 )
 
 app.get('/api/stop', (req, res, next) => {
-    prevPin.digital[0][0] = false
-    niusb.writeToDevice(prevPin, ()=> {
-    prevPin.digital[1][3] = false
-    niusb.writeToDevice(prevPin)
+    // prevPin.digital[0][0] = false
+    // niusb.writeToDevice(prevPin, ()=> {
+    // prevPin.digital[1][3] = false
+    // niusb.writeToDevice(prevPin)
     // printPinState()
-    })
+    // })
     // rl.write("Curent key settings are: " + prevPin);})
+        netlistmanager.getSignalPins()?.forEach((pin) => {
+            prevPin.digital[Math.floor((pin-1)/8)][(pin-1) % 8] = false
+        })
+        netlistmanager.getPowerPins()?.forEach((pin) => {
+            prevPin.digital[Math.floor((pin-1)/8)][(pin-1) % 8] = false
+        })
+        niusb.writeToDevice(prevPin)
     res.send("stopped")
 })
 
