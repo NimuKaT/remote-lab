@@ -232,6 +232,26 @@ export default class NetListManger {
                 deletingNets.push(i)
             }
         })
+
+        netlist.forEach((net, netI) => {
+            let words = net.split(" ")
+            if (words[words.length-1] === "LM348") {
+                let conCount = 0;
+                words.forEach((word, i) => {
+                    if (i !== 0 && i !== words.length-1) {
+                        let connected = revMap.get(word)
+                        if (connected && connected.length > 1) {
+                            conCount++;
+                        }
+                    }
+                })
+                if (conCount <= 2) {
+                    deletingNets.push(netI);
+                }
+            }
+        })
+
+
         if (deletingNets.length !== 0) {
             let newNetList: Array<string> = []
             netlist.forEach((net, index) => {

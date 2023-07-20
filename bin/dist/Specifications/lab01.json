@@ -126,7 +126,8 @@
                     "off": []
                 }
             ]
-        }
+        },
+        "conditional?" :[]
     },
     "PSUCondition": {
         "V1": 15,

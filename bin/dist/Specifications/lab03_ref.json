@@ -9,7 +9,7 @@
         1,
         1,
         1,
-        0,
+        1,
         0,
         0,
         1,
@@ -72,7 +72,7 @@
     },
     "spiceNetlist": {
         "baseNetlist": [
-            "",
+            "XU11 OUT1 0 OscCH1",
             "XU2 0 ni2 V2 Vcc Vee",
             "R21 ni2 V2 R21",
             "XU12 V2 0 OscCH2"
@@ -102,10 +102,10 @@
                 {
                     "pinNum": 3,
                     "on": [
-                        "XU1 i1 0 out1 Vcc Vee"
+                        "XU1 i1 0 OUT1 Vcc Vee"
                     ],
                     "off": [
-                        "XU1 i1 ni1 out1 Vcc Vee"
+                        "XU1 i1 ni1 OUT1 Vcc Vee"
                     ]
                 },
                 {
@@ -124,28 +124,28 @@
                 {
                     "pinNum": 5,
                     "on": [
-                        "R13 out1 ni2 R13"
+                        "R13 OUT1 ni2 R13"
                     ],
                     "off": [
-                        "R14 out1 ni2 R14"
+                        "R14 OUT1 ni2 R14"
                     ]
                 },
                 {
                     "pinNum": 6,
                     "on": [
-                        "R11 out1 ni2 R11"
+                        "R11 OUT1 ni2 R11"
                     ],
                     "off": [
-                        "R12 out1 ni2 R12"
+                        "R12 OUT1 ni2 R12"
                     ]
                 },
                 {
                     "pinNum": 7,
                     "on": [
-                        "R16 out1 ni2 R16"
+                        "R16 OUT1 ni2 R16"
                     ],
                     "off": [
-                        "R15 out1 ni2 R15"
+                        "R15 OUT1 ni2 R15"
                     ]
                 },
                 {
@@ -167,46 +167,63 @@
         "conditional?": [
             {
                 "pinStates": [
-                    {"pin": 2, "state": true},
-                    {"pin": 3, "state": false},
+                    {"pin": 3, "state": true},
                     {"pin": 4, "state": true}
                 ],
-                "net": ["R2 output Vi- 3.9k",
-                        "R1 Vi- 0 4.7k"]
+                "net": ["C1 OUT1 i1 C1"]
             },
             {
                 "pinStates": [
-                    {"pin": 2, "state": false},
+                    {"pin": 2, "state": true},
+                    {"pin": 4, "state": true},
                     {"pin": 4, "state": true}
                 ],
-                "net":[
-                        "R2 output N001 3.9k",
-                        "R1 N001 0 4.7k"
-                ]
+                "net":["R41 V2 OUT2 R41"]
             }, 
             {
                 "pinStates": [
                     {"pin": 2, "state": true},
-                    {"pin": 3, "state": true}
+                    {"pin": 4, "state": true},
+                    {"pin": 8, "state": true},
+                    {"pin": 9, "state": true}
                 ],
-                "net": ["INVALID"]
+                "net": ["R31 OUT2 i1 R31"]
+
+            },
+            {
+                "pinStates": [
+                    {"pin": 2, "state": true},
+                    {"pin": 4, "state": true},
+                    {"pin": 8, "state": true},
+                    {"pin": 9, "state": false}
+                ],
+                "net": ["R32 OUT2 i1 R32"]
 
             },
             {
                 "pinStates": [
                     {"pin": 2, "state": false},
-                    {"pin": 3, "state": false}
+                    {"pin": 4, "state": false},
+                    {"pin": 8, "state": false},
+                    {"pin": 9, "state": true}
                 ],
-                "net": [
-                        "R7 Vi- 0 5.6k",
-                        "R8 Vi- 0 6.8k"
-                ]
+                "net": ["R31 V2 i1 R31"]
+
+            },
+            {
+                "pinStates": [
+                    {"pin": 2, "state": false},
+                    {"pin": 4, "state": false},
+                    {"pin": 8, "state": false},
+                    {"pin": 9, "state": false}
+                ],
+                "net": ["R32 V2 i1 R32"]
 
             }
         ]
     },
     "PSUCondition": {
-        "V1": 10,
+        "V1": 15,
         "V2": 0,
         "A1": 0.1,
         "A2": 0.1,
