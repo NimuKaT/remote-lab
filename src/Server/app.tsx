@@ -169,8 +169,8 @@ function getLabFile() {
 }
 
 function readLabFile(fileName: string) {
-    fs.readFile(specificationDir + fileName, 'utf-8').then((data) => {
-            labFile = fileName
+    fs.readFile(specificationDir + fileName + ".json", 'utf-8').then((data) => {
+            labFile = fileName + ".json"
             labspec = JSON.parse(data) as LabSpec;
             netlistmanager.loadLabSpec(labspec)
             readCommand("")

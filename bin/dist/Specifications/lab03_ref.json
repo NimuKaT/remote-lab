@@ -1,0 +1,222 @@
+{
+    "driverName": "NIUSB",
+    "digitalPinsEnabled": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+    ],
+    "analoguePinsEnabled": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+    ],
+    "defaultPinState": {
+        "digital": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+        ],
+        "analogue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    "power": {
+        "digital": [
+            12
+        ],
+        "analogue": []
+    },
+    "signal": {
+        "digital": [
+            
+        ],
+        "analogue": []
+    },
+    "spiceNetlist": {
+        "baseNetlist": [
+            "",
+            "XU2 0 ni2 V2 Vcc Vee",
+            "R21 ni2 V2 R21",
+            "XU12 V2 0 OscCH2"
+           
+        ],
+        "switches": {
+            "digital": [
+                {
+                    "pinNum": 1,
+                    "on": [
+                        "Rx23 i4 OUT2 Rx23",
+                        "Rx21 i4 OUT2 Rx21"
+                    ],
+                    "off": [
+                        "Rx24 i4 OUT2 RX24",
+                        "Rx22 i4 OUT2 RX22"
+                    ]
+                },
+                {
+                    "pinNum": 2,
+                    "on": [
+                        
+                    ],
+                    "off": [
+                    ]
+                },
+                {
+                    "pinNum": 3,
+                    "on": [
+                        "XU1 i1 0 out1 Vcc Vee"
+                    ],
+                    "off": [
+                        "XU1 i1 ni1 out1 Vcc Vee"
+                    ]
+                },
+                {
+                    "pinNum": 4,
+                    "on": [
+                        "XU13 Ve 0 OscCH3",
+                        "XU3 ni3 Ve out3 Vcc Vee",
+                        "Rx11 Ve i4 Rx11",
+                        "XU4 i4 0 out4 Vcc Vee",
+                        "D out4 OUT2 diode",
+                        "D OUT2 out3 diode",
+                        "XU14 OUT2 0 OscCH4"
+                    ],
+                    "off": []
+                },
+                {
+                    "pinNum": 5,
+                    "on": [
+                        "R13 out1 ni2 R13"
+                    ],
+                    "off": [
+                        "R14 out1 ni2 R14"
+                    ]
+                },
+                {
+                    "pinNum": 6,
+                    "on": [
+                        "R11 out1 ni2 R11"
+                    ],
+                    "off": [
+                        "R12 out1 ni2 R12"
+                    ]
+                },
+                {
+                    "pinNum": 7,
+                    "on": [
+                        "R16 out1 ni2 R16"
+                    ],
+                    "off": [
+                        "R15 out1 ni2 R15"
+                    ]
+                },
+                {
+                    "pinNum": 8,
+                    "on": [
+                    ],
+                    "off": [
+                    ]
+                },
+                {
+                    "pinNum": 9,
+                    "on": [
+                    ],
+                    "off": [
+                    ]
+                }
+            ]
+        },
+        "conditional?": [
+            {
+                "pinStates": [
+                    {"pin": 2, "state": true},
+                    {"pin": 3, "state": false},
+                    {"pin": 4, "state": true}
+                ],
+                "net": ["R2 output Vi- 3.9k",
+                        "R1 Vi- 0 4.7k"]
+            },
+            {
+                "pinStates": [
+                    {"pin": 2, "state": false},
+                    {"pin": 4, "state": true}
+                ],
+                "net":[
+                        "R2 output N001 3.9k",
+                        "R1 N001 0 4.7k"
+                ]
+            }, 
+            {
+                "pinStates": [
+                    {"pin": 2, "state": true},
+                    {"pin": 3, "state": true}
+                ],
+                "net": ["INVALID"]
+
+            },
+            {
+                "pinStates": [
+                    {"pin": 2, "state": false},
+                    {"pin": 3, "state": false}
+                ],
+                "net": [
+                        "R7 Vi- 0 5.6k",
+                        "R8 Vi- 0 6.8k"
+                ]
+
+            }
+        ]
+    },
+    "PSUCondition": {
+        "V1": 10,
+        "V2": 0,
+        "A1": 0.1,
+        "A2": 0.1,
+        "buttonState": [
+            true,
+            false
+        ],
+        "netlist": [
+            ""
+        ]
+    }
+    
+}

@@ -154,7 +154,10 @@ function testCompMatch(refComps: Array<component>, targetComps: Array<component>
     // console.log("testIndexes: ", testIndexes);
     // console.log("testIndexes.length: %d", testIndexes.length);
     
-
+    // Temp fix
+    if (testIndexes === undefined) {
+        return -8
+    }
     while (testC < testIndexes.length) {
         testI = testIndexes[testC];
         while (targetCompMapped[testI] >= 0 && testC + 1 < testIndexes.length) {

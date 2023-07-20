@@ -179,7 +179,7 @@ export default class BBCompSearch {
     constructor() {
         this.icItems.set("LM301", 8)
         this.icItems.set("LM741", 8)
-        this.icItems.set("LM348", 14)
+        this.icItems.set("LM348N", 14)
         this.icItems.set("CA3083", 16)
         this.icItems.set("POT", 4)
     }

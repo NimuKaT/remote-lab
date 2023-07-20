@@ -14,7 +14,14 @@ export default interface LabSpec {
                 "on": Array<string>,
                 "off": Array<string>
             }>
-        }
+        },
+        "conditional?": Array<{
+            "pinStates": Array<{
+                "pin": number,
+                "state": boolean
+            }>,
+            "net": Array<string>
+        }>
     },
     "PSUCondition"?: {
         "V1": number,

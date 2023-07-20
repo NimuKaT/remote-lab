@@ -85,6 +85,26 @@ export default class NetListManger {
                 }
                
             })
+
+            // Add conditional pins
+            this.labspec?.spiceNetlist["conditional?"].forEach((con) => {
+                let metCondition: boolean = true;
+                con.pinStates.every((state) => {
+                    if (state.state === digtialPins[state.pin-1]) {
+                        // ok
+                    } else {
+                        metCondition = false;
+                    }
+                    return metCondition
+                })
+                if (metCondition) {
+                    con.net.forEach((net) => {
+                        netList.push(net)
+                    })
+                }
+            });
+
+
             // Add nets of exclude pins
             excludePins.forEach((pin) => {
                 let switchIndex = this.labspec?.spiceNetlist.switches.digital.findIndex((swConfig) => {
@@ -123,6 +143,11 @@ export default class NetListManger {
                 newTarget.push("XU " + parts[7] + " " + parts[6] + " " + parts[8] + " Qn")
                 newTarget.push("XU " + parts[9] + " " + parts[10] + " " + parts[11] + " Qn")
                 newTarget.push("XU " + parts[14] + " " + parts[13] + " " + parts[12] + " Qn")
+            } else if (parts[parts.length-1] === "LM348N") {
+                newTarget.push("XU " + parts[2] + " " + parts[3] + " " + parts[1] + " " + parts[4] + " " + parts[11] + " LM348")
+                newTarget.push("XU " + parts[6] + " " + parts[5] + " " + parts[7] + " " + parts[4] + " " + parts[11] + " LM348")
+                newTarget.push("XU " + parts[9] + " " + parts[10] + " " + parts[8] + " " + parts[4] + " " + parts[11] + " LM348")
+                newTarget.push("XU " + parts[13] + " " + parts[12] + " " + parts[14] + " " + parts[4] + " " + parts[11] + " LM348")
             } else if (parts[1] === "Mch2+" || parts[1] === "Mch2-" || parts[1] === "Sig+") {
 
             }
