@@ -88,11 +88,11 @@ app.post('/api/runNetlist', (req, res, next) => {
     // pinconfig.digital[1][3] = true
     niusb.writeToDevice(prevPin, () => {
         netlistmanager.getSignalPins()?.forEach((pin) => {
-            prevPin.digital[Math.floor((pin-1)/8)][(pin-1) % 8] = pinconfig.digital[Math.floor((pin-1)/8)][(pin-1)%8]
+            prevPin.digital[Math.floor((pin-1)/8)][(pin-1) % 8] = pinconfig.digital[Math.floor((pin-1)/8)][(pin-1) % 8];
         })
     // pinconfig.digital[0][0] = true
     niusb.writeToDevice(prevPin)}) }) }) 
-    prevPin = pinconfig
+    // prevPin = pinconfig
     })
     res.send("ok")
     } else {
