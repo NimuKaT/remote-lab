@@ -189,7 +189,7 @@ export default class NetListManger {
             let prefix = net.charAt(0);
             let currNets: Array<string> = [];
             let words = net.split(" ")
-            if (prefix === 'R' || prefix === 'C' || prefix === 'V') {
+            if (prefix === 'R' || prefix === 'C' || prefix === 'V' || prefix === 'D') {
                 currNets.push(words[1])
                 if (revMap.has(words[1])) {
                     revMap.get(words[1])?.push(i)

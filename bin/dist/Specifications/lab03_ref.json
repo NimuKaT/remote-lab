@@ -73,9 +73,11 @@
     "spiceNetlist": {
         "baseNetlist": [
             "XU11 OUT1 0 OscCH1",
-            "XU2 0 ni2 V2 Vcc Vee",
-            "R21 ni2 V2 R21",
-            "XU12 V2 0 OscCH2"
+            "XU2 0 ni2 V2 Vcc Vee LM348",
+            "R21 ni2 V2 10k",
+            "XU12 V2 0 OscCH2",
+            "V1 Vcc 0 15",
+            "V2 0 Vee 15"
            
         ],
         "switches": {
@@ -83,12 +85,10 @@
                 {
                     "pinNum": 1,
                     "on": [
-                        "Rx23 i4 OUT2 Rx23",
-                        "Rx21 i4 OUT2 Rx21"
+                        
                     ],
                     "off": [
-                        "Rx24 i4 OUT2 RX24",
-                        "Rx22 i4 OUT2 RX22"
+                        
                     ]
                 },
                 {
@@ -102,21 +102,22 @@
                 {
                     "pinNum": 3,
                     "on": [
-                        "XU1 i1 0 OUT1 Vcc Vee"
+                        "XU1 i1 0 OUT1 Vcc Vee LM348"
                     ],
                     "off": [
-                        "XU1 i1 ni1 OUT1 Vcc Vee"
+                        "XU1 OUT1 ni1 OUT1 Vcc Vee LM348",
+                        "XU5 Vcc ni1 Vee NC_09 POT"
                     ]
                 },
                 {
                     "pinNum": 4,
                     "on": [
                         "XU13 Ve 0 OscCH3",
-                        "XU3 ni3 Ve out3 Vcc Vee",
-                        "Rx11 Ve i4 Rx11",
-                        "XU4 i4 0 out4 Vcc Vee",
-                        "D out4 OUT2 diode",
-                        "D OUT2 out3 diode",
+                        "XU3 OUT2 Ve OUT3 Vcc Vee LM348",
+                        "Rx11 Ve i4 39k",
+                        "XU4 i4 0 OUT4 Vcc Vee LM348",
+                        "D OUT4 OUT2 diode",
+                        "D OUT2 OUT3 diode",
                         "XU14 OUT2 0 OscCH4"
                     ],
                     "off": []
@@ -124,28 +125,28 @@
                 {
                     "pinNum": 5,
                     "on": [
-                        "R13 OUT1 ni2 R13"
+                        "R13 OUT1 ni2 3.3k"
                     ],
                     "off": [
-                        "R14 OUT1 ni2 R14"
+                        "R14 OUT1 ni2 33k"
                     ]
                 },
                 {
                     "pinNum": 6,
                     "on": [
-                        "R11 OUT1 ni2 R11"
+                        "R11 OUT1 ni2 1.2k"
                     ],
                     "off": [
-                        "R12 OUT1 ni2 R12"
+                        "R12 OUT1 ni2 12k"
                     ]
                 },
                 {
                     "pinNum": 7,
                     "on": [
-                        "R16 OUT1 ni2 R16"
+                        "R16 OUT1 ni2 4.7k"
                     ],
                     "off": [
-                        "R15 OUT1 ni2 R15"
+                        "R15 OUT1 ni2 47k"
                     ]
                 },
                 {
@@ -168,17 +169,34 @@
             {
                 "pinStates": [
                     {"pin": 3, "state": true},
-                    {"pin": 4, "state": true}
+                    {"pin": 8, "state": true}
                 ],
-                "net": ["C1 OUT1 i1 C1"]
+                "net": ["C1 OUT1 i1 10p"]
+            },
+            {
+                "pinStates": [
+                    {"pin": 1, "state": false},
+                    {"pin": 2, "state": true}
+                ],
+                "net": ["Rx23 i4 OUT2 1.5k",
+                        "Rx21 i4 OUT2 1.8k"]
+            },
+            {
+                "pinStates": [
+                    {"pin": 1, "state": true},
+                    {"pin": 2, "state": true}
+                ],
+                "net": ["Rx24 i4 OUT2 15k",
+                        "Rx22 i4 OUT2 18k"]
             },
             {
                 "pinStates": [
                     {"pin": 2, "state": true},
-                    {"pin": 4, "state": true},
+                    {"pin": 3, "state": true},
                     {"pin": 4, "state": true}
                 ],
-                "net":["R41 V2 OUT2 R41"]
+                "net":["R41 V2 OUT2 56k",
+                       "XU5 Vcc Ve 0 NC_09 POT"]
             }, 
             {
                 "pinStates": [
@@ -187,7 +205,7 @@
                     {"pin": 8, "state": true},
                     {"pin": 9, "state": true}
                 ],
-                "net": ["R31 OUT2 i1 R31"]
+                "net": ["R31 OUT2 i1 6.8k"]
 
             },
             {
@@ -197,27 +215,27 @@
                     {"pin": 8, "state": true},
                     {"pin": 9, "state": false}
                 ],
-                "net": ["R32 OUT2 i1 R32"]
+                "net": ["R32 OUT2 i1 68k"]
 
-            },
+            }, 
             {
                 "pinStates": [
                     {"pin": 2, "state": false},
                     {"pin": 4, "state": false},
-                    {"pin": 8, "state": false},
+                    {"pin": 8, "state": true},
                     {"pin": 9, "state": true}
                 ],
-                "net": ["R31 V2 i1 R31"]
+                "net": ["R31 V2 i1 6.8k"]
 
             },
             {
                 "pinStates": [
                     {"pin": 2, "state": false},
                     {"pin": 4, "state": false},
-                    {"pin": 8, "state": false},
+                    {"pin": 8, "state": true},
                     {"pin": 9, "state": false}
                 ],
-                "net": ["R32 V2 i1 R32"]
+                "net": ["R32 V2 i1 68k"]
 
             }
         ]
